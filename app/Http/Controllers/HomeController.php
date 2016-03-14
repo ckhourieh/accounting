@@ -62,23 +62,22 @@ class HomeController extends Controller
 
     public function totalAmountDue($client_id)
     {
-        //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getClientTotalAmountDue($client_id);
-        return view('clients.total-amount-due', array('clientInfo' => $clientInfo));
+        return view('clients.total-amount-due');
     }
 
     public function totalIncome($client_id)
     {
-        //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getClientTotalIncome($client_id);
-        return view('clients.total-income', array('clientInfo' => $clientInfo));
+        return view('clients.total-income');
     }
 
     public function nextPayments($client_id)
     {
-        //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getClientNextPayments($client_id);
-        return view('clients.nextpayments', array('clientInfo' => $clientInfo));
+        return view('clients.nextpayments');
+    }
+
+    public function clientTimeline($client_id)
+    {
+        return view('clients.timeline');
     }
 
     public function addClient()
@@ -169,10 +168,7 @@ class HomeController extends Controller
         //gets all clients 
         $clients = $this->homeRepository->getClientNames();
 
-        //gets all frequencies 
-        $frequencies = $this->homeRepository->getFrequencies();
-
-        return view('invoices.add-invoice', array('clients' => $clients, 'frequencies' => $frequencies));
+        return view('invoices.add-invoice', array('clients' => $clients));
     }
 
     public function storeInvoice(Request $request)
@@ -192,9 +188,8 @@ class HomeController extends Controller
         $this->validate($request, ['invoice_id' => 'required', 
                                     'invoice_title' => 'required', 
                                     'invoice_client' => 'required',
-                                    'invoice_date' => 'required',
-                                    'invoice_frequency' => 'required']);
-        $this->homeRepository->addInvoice($request->only('invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_frequency'), $amount);
+                                    'invoice_date' => 'required']);
+        $this->homeRepository->addInvoice($request->only('invoice_id', 'invoice_title', 'invoice_client', 'invoice_date'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully added!');
 
         //gets all invoices and their information 
@@ -208,16 +203,13 @@ class HomeController extends Controller
         //gets all clients 
         $clients = $this->homeRepository->getClientNames();
 
-        //gets all frequencies 
-        $frequencies = $this->homeRepository->getFrequencies();
-
         //get invoice items
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
 
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
 
-        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'frequencies' => $frequencies, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
+        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
     }
 
     public function updateInvoice(Request $request)
@@ -239,10 +231,9 @@ class HomeController extends Controller
                                     'invoice_title' => 'required', 
                                     'invoice_client' => 'required',
                                     'invoice_date' => 'required',
-                                    'invoice_frequency' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
-        $this->homeRepository->updateInvoice($request->only('id', 'invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_frequency', 'invoice_status', 'invoice_paid'), $amount);
+        $this->homeRepository->updateInvoice($request->only('id', 'invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully updated!');
 
         //gets all invoices and their information 

@@ -46,15 +46,7 @@
                                 <td>{{ $i->title }}</td>
                                 <td></td>
                                 <td>$ {{ $i->amount }}.00</td>
-                                <td>
-                                    @if($i->status==0)
-                                    Not Paid
-                                    @elseif($i->status==1)
-                                    Paid
-                                    @else
-                                    Not complited
-                                    @endif
-                                </td>
+                                <td>{{ $i->status }}</td>
                                 <td>$ {{ $i->paid }}.00</td>
                                 <td>$ {{ $i->amount - $i->paid }}.00</td>
                                 <td>

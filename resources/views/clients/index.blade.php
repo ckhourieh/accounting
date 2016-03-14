@@ -39,10 +39,10 @@
                             <tr>
                                 <td>{{ $c->client_id }}</td>
                                 <td><a href="{{ route('view_client_details_path', $c->client_id) }}">{{ $c->name }}</a></td>
-                                <td><a href="{{ route('total_amount_due_path', $c->client_id) }}"></a></td>
-                                <td><a href="{{ route('total_income_path', $c->client_id) }}"></a></td>
-                                <td><a href="{{ route('next_payments_path', $c->client_id) }}"></a></td>
-                                <td><a href="">See Graph</a></td>
+                                <td><a href="{{ route('total_amount_due_path', $c->client_id) }}" style="color:#d9534f">$ {{ $c->total_amount_due }}.00</a></td>
+                                <td><a href="{{ route('total_income_path', $c->client_id) }}" style="color:#5cb85c">$ {{ $c->total_income }}.00</a></td>
+                                <td><a href="{{ route('next_payments_path', $c->client_id) }}">{{ $c->next_payments }}</a></td>
+                                <td><a href="{{ route('client_timeline_path', $c->client_id) }}">See Graph</a></td>
                                 <td>
                                     <a href="{{ route('edit_client_path', $c->client_id) }}"><i class="fa fa-pencil-square-o"></i></a>
                                     <a href="{{ route('hide_client_path', $c->client_id) }}"><i class="fa fa-trash-o"></i></a>

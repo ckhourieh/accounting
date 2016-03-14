@@ -67,6 +67,12 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@nextPayments'
     ]);
 
+    //Timeline
+    Route::get('/timeline-{client_id}', [
+        'as' => 'client_timeline_path',
+        'uses' => 'HomeController@clientTimeline'
+    ]);
+
     //Add Client
     Route::get('/clients/add-client', [
         'as' => 'add_client_path',

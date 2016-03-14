@@ -15,8 +15,13 @@ class HomeRepository {
     ------------------------------------*/
     public function getClients()
     {
-      $q = \DB::select("SELECT * FROM ta_clients WHERE hidden = '0' ORDER BY client_id ASC");
-      return $q;
+        $q = \DB::select("SELECT A.*, SUM(B.amount) as total_amount_due, SUM(C.amount) as total_income, COUNT(B.invoice_id) as next_payments
+                          FROM ta_clients as A 
+                          LEFT JOIN ta_invoices as B ON A.client_id = B.client_id AND B.status_id != 3 AND B.status_id != 6
+                          LEFT JOIN ta_invoices as C ON A.client_id = C.client_id AND C.status_id = 3 
+                          WHERE A.hidden = '0' 
+                          GROUP BY A.client_id");
+        return $q;
     }
 
     /*----------------------------------
@@ -24,8 +29,8 @@ class HomeRepository {
     ------------------------------------*/
     public function getClientNames()
     {
-      $q = \DB::select("SELECT client_id, name FROM ta_clients WHERE hidden = '0' ORDER BY name ASC");
-      return $q;
+        $q = \DB::select("SELECT client_id, name FROM ta_clients WHERE hidden = '0' ORDER BY name ASC");
+        return $q;
     }
 
     /*----------------------------------
@@ -33,9 +38,9 @@ class HomeRepository {
     ------------------------------------*/
     public function getClient($client_id)
     {
-      $q = \DB::select("SELECT * FROM ta_clients WHERE client_id = :client_id",
+        $q = \DB::select("SELECT * FROM ta_clients WHERE client_id = :client_id",
             array(':client_id' => $client_id));
-      return $q;
+        return $q;
     }
 
     /*----------------------------------
@@ -43,7 +48,7 @@ class HomeRepository {
     ------------------------------------*/
     public function addClient($input)
     {
-      \DB::table('ta_clients')->insert([
+        \DB::table('ta_clients')->insert([
             'name' => $input['client_name'],
             'desc' => $input['client_desc'], 
             'email' => $input['client_email'],
@@ -62,7 +67,7 @@ class HomeRepository {
     ------------------------------------*/
     public function updateClient($input)
     {
-      \DB::table('ta_clients')
+        \DB::table('ta_clients')
             ->where('client_id', $input['client_id'])
             ->update(['name' => $input['client_name'],
             'desc' => $input['client_desc'], 
@@ -80,7 +85,7 @@ class HomeRepository {
     ------------------------------------*/
     public function hideClient($client_id)
     {
-      \DB::table('ta_clients')
+        \DB::table('ta_clients')
             ->where('client_id', $client_id)
             ->update(['hidden' => '1',
             'updated_at' => date('Y-m-d H:i:s')]);
@@ -96,10 +101,12 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoices()
     {
-      $q = \DB::select("SELECT A.id, A.invoice_id, A.title, A.client_id, A.amount, A.due_date, A.status, A.paid, B.name, B.email, C.frequency
-                        FROM ta_invoices as A LEFT JOIN ta_clients as B ON A.client_id = B.client_id LEFT JOIN ta_frequencies as C ON A.frequency_id = C.frequency_id
+        $q = \DB::select("SELECT A.id, A.invoice_id, A.title, A.client_id, A.amount, A.due_date, C.name as status, A.paid, B.name, B.email
+                        FROM ta_invoices as A 
+                        JOIN ta_clients as B ON A.client_id = B.client_id 
+                        JOIN ta_status as C ON A.status_id = C.status_id
                         WHERE A.hidden = '0'");
-      return $q;
+        return $q;
     }
 
     /*----------------------------------
@@ -107,11 +114,11 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoice($invoice_id)
     {
-      $q = \DB::select("SELECT A.invoice_id, A.due_date, A.created_at, A.amount, B.name, B.email, B.address, B.contact_name
+        $q = \DB::select("SELECT A.invoice_id, A.due_date, A.created_at, A.amount, B.name, B.email, B.address, B.contact_name
                         FROM ta_invoices as A , ta_clients as B
                         WHERE A.hidden = '0' AND A.client_id = B.client_id AND A.invoice_id = :invoice_id",
             array(':invoice_id' => $invoice_id));
-      return $q;
+        return $q;
     }
 
     /*----------------------------------
@@ -119,11 +126,11 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoiceItems($invoice_id)
     {
-      $q = \DB::select("SELECT B.invoice_item_id, B.title, B.item_amount
+        $q = \DB::select("SELECT B.invoice_item_id, B.title, B.item_amount
                         FROM ta_invoices as A , ta_invoice_items as B
                         WHERE A.hidden = '0' AND A.invoice_id = B.invoice_id AND A.invoice_id = :invoice_id",
             array(':invoice_id' => $invoice_id));
-      return $q;
+        return $q;
     }
 
     /*----------------------------------
@@ -139,7 +146,6 @@ class HomeRepository {
                 'client_id' => $input['invoice_client'],
                 'amount' => $amount, 
                 'due_date' => $input['invoice_date'],
-                'frequency_id' => $input['invoice_frequency'],
                 'status' => '0',
                 'paid' => '0',
                 'hidden' => '0',
@@ -167,7 +173,7 @@ class HomeRepository {
     ------------------------------------*/
     public function addInvoiceItems($invoice_id, $invoice_item_title, $invoice_item_amount)
     {
-      \DB::table('ta_invoice_items')->insert([
+        \DB::table('ta_invoice_items')->insert([
             'invoice_id' => $invoice_id,
             'title' => $invoice_item_title, 
             'item_amount' => $invoice_item_amount, 
@@ -180,14 +186,13 @@ class HomeRepository {
     ------------------------------------*/
     public function updateInvoice($input, $amount)
     {
-      \DB::table('ta_invoices')
+        \DB::table('ta_invoices')
             ->where('id', $input['id'])
             ->update(['invoice_id' => $input['invoice_id'],
             'title' => $input['invoice_title'], 
             'client_id' => $input['invoice_client'],
             'amount' => $amount, 
             'due_date' => $input['invoice_date'],
-            'frequency_id' => $input['invoice_frequency'],
             'status' => $input['invoice_status'],
             'paid' => $input['invoice_paid'],
             'updated_at' => date('Y-m-d H:i:s')]);
@@ -198,7 +203,7 @@ class HomeRepository {
     ------------------------------------*/
     public function updateInvoiceItems($id, $invoice_item_title, $invoice_item_amount)
     {
-      \DB::table('ta_invoice_items')
+        \DB::table('ta_invoice_items')
             ->where('invoice_item_id', $id)
             ->update(['title' => $invoice_item_title, 
             'item_amount' => $invoice_item_amount, 
@@ -211,25 +216,15 @@ class HomeRepository {
     ------------------------------------*/
     public function hideInvoice($invoice_id)
     {
-      \DB::table('ta_invoices')
+        \DB::table('ta_invoices')
             ->where('id', $invoice_id)
             ->update(['hidden' => '1',
             'updated_at' => date('Y-m-d H:i:s')]);
     }
 
 
-    /*----------------------------------
-    Get all frequencies
-    ------------------------------------*/
-    public function getFrequencies()
-    {
-      $q = \DB::select("SELECT * FROM ta_frequencies ORDER BY frequency ASC");
-      return $q;
-    }
-
-
     /* **************************
-                TRANSACTIONS
+            TRANSACTIONS
      ************************** */
 
     /*----------------------------------
@@ -237,8 +232,8 @@ class HomeRepository {
     ------------------------------------*/
     public function getTransactions()
     {
-      $q = \DB::select("SELECT * FROM ta_transactions WHERE hidden = '0' ORDER BY transaction_id ASC");
-      return $q;
+        $q = \DB::select("SELECT * FROM ta_transactions WHERE hidden = '0' ORDER BY transaction_id ASC");
+        return $q;
     }
 
     /*----------------------------------
@@ -246,9 +241,9 @@ class HomeRepository {
     ------------------------------------*/
     public function getTransaction($transaction_id)
     {
-      $q = \DB::select("SELECT * FROM ta_transactions WHERE transaction_id = :transaction_id",
+        $q = \DB::select("SELECT * FROM ta_transactions WHERE transaction_id = :transaction_id",
             array(':transaction_id' => $transaction_id));
-      return $q;
+        return $q;
     }
 
     /*----------------------------------
@@ -256,7 +251,7 @@ class HomeRepository {
     ------------------------------------*/
     public function addTransaction($input)
     {
-      \DB::table('ta_transactions')->insert([
+        \DB::table('ta_transactions')->insert([
             'invoice_id' => $input['transaction_invoice'],
             'source' => $input['transaction_source'], 
             'amount' => $input['transaction_amount'],
@@ -273,7 +268,7 @@ class HomeRepository {
     ------------------------------------*/
     public function updateTransaction($input)
     {
-      \DB::table('ta_transactions')
+        \DB::table('ta_transactions')
             ->where('transaction_id', $input['transaction_id'])
             ->update(['invoice_id' => $input['transaction_invoice'],
             'source' => $input['transaction_source'], 
@@ -289,7 +284,7 @@ class HomeRepository {
     ------------------------------------*/
     public function hideTransaction($transaction_id)
     {
-      \DB::table('ta_transactions')
+        \DB::table('ta_transactions')
             ->where('transaction_id', $transaction_id)
             ->update(['hidden' => '1',
             'updated_at' => date('Y-m-d H:i:s')]);
