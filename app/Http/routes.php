@@ -43,6 +43,30 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@clients'
     ]);
 
+    //Client details
+    Route::get('/client-{client_id}', [
+        'as' => 'view_client_details_path',
+        'uses' => 'HomeController@clientDetails'
+    ]);
+
+    //Client total amount due
+    Route::get('/total-amount-due-{client_id}', [
+        'as' => 'total_amount_due_path',
+        'uses' => 'HomeController@totalAmountDue'
+    ]);
+
+    //Client total income
+    Route::get('/total-income-{client_id}', [
+        'as' => 'total_income_path',
+        'uses' => 'HomeController@totalIncome'
+    ]);
+
+    //Client Next Payments
+    Route::get('/next-payments-{client_id}', [
+        'as' => 'next_payments_path',
+        'uses' => 'HomeController@nextPayments'
+    ]);
+
     //Add Client
     Route::get('/clients/add-client', [
         'as' => 'add_client_path',
@@ -86,6 +110,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/invoices', [
         'as' => 'invoices_path',
         'uses' => 'HomeController@invoices'
+    ]);
+
+    //Invoice Details
+    Route::get('/invoice-{invoice_id}', [
+        'as' => 'view_invoice_details_path',
+        'uses' => 'HomeController@invoiceDetails'
     ]);
 
     //Add Invoice
@@ -143,6 +173,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/transactions', [
         'as' => 'transactions_path',
         'uses' => 'HomeController@transactions'
+    ]);
+
+    //Transaction Details
+    Route::get('/transaction-{transaction_id}', [
+        'as' => 'view_transaction_details_path',
+        'uses' => 'HomeController@transactionDetails'
     ]);
 
     //Add Transaction

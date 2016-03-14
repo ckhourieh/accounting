@@ -48,14 +48,42 @@ class HomeController extends Controller
 
     public function clients()
     {
-        //gets all clients and their information 
+        //gets the list of all clients
         $clientsList = $this->homeRepository->getClients();
-        return view('clients', array('clientsList' => $clientsList));
+        return view('clients.index', array('clientsList' => $clientsList));
+    }
+
+    public function clientDetails($client_id)
+    {
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getClient($client_id);
+        return view('clients.client-details', array('clientInfo' => $clientInfo));
+    }
+
+    public function totalAmountDue($client_id)
+    {
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getClientTotalAmountDue($client_id);
+        return view('clients.total-amount-due', array('clientInfo' => $clientInfo));
+    }
+
+    public function totalIncome($client_id)
+    {
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getClientTotalIncome($client_id);
+        return view('clients.total-income', array('clientInfo' => $clientInfo));
+    }
+
+    public function nextPayments($client_id)
+    {
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getClientNextPayments($client_id);
+        return view('clients.nextpayments', array('clientInfo' => $clientInfo));
     }
 
     public function addClient()
     {
-        return view('add-client');
+        return view('clients.add-client');
     }
 
     public function storeClient(Request $request)
@@ -74,15 +102,14 @@ class HomeController extends Controller
 
         //gets all clients and their information 
         $clientsList = $this->homeRepository->getClients();
-
-        return view('clients', array('clientsList' => $clientsList));
+        return view('clients.index', array('clientsList' => $clientsList));
     }
 
     public function editClient($client_id)
     {
         //gets all information of a specific client
         $clientInfo = $this->homeRepository->getClient($client_id);
-        return view('edit-client', array('client_id' => $client_id, 'clientInfo' => $clientInfo));
+        return view('clients.edit-client', array('client_id' => $client_id, 'clientInfo' => $clientInfo));
     }
 
     public function updateClient(Request $request)
@@ -102,8 +129,7 @@ class HomeController extends Controller
 
         //gets all clients and their information 
         $clientsList = $this->homeRepository->getClients();
-
-        return view('clients', array('clientsList' => $clientsList));
+        return view('clients.index', array('clientsList' => $clientsList));
     }
 
     public function hideClient($client_id)
@@ -114,7 +140,7 @@ class HomeController extends Controller
         $clientsList = $this->homeRepository->getClients();
         $request->session()->flash('flash_message','Client Successfully removed!');
 
-        return view('clients', array('clientsList' => $clientsList));
+        return view('clients.index', array('clientsList' => $clientsList));
     }
 
 
@@ -126,8 +152,16 @@ class HomeController extends Controller
     {
         //gets all invoices and their information 
         $invoicesList = $this->homeRepository->getInvoices();
+        return view('invoices.index', array('invoicesList' => $invoicesList));
+    }
 
-        return view('invoices', array('invoicesList' => $invoicesList));
+    public function invoiceDetails($invoice_id)
+    {
+        //get invoice items
+        $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
+        //gets all information of a specific invoice
+        $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
+        return view('invoices.invoice-details', array('invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
     }
 
     public function addInvoice()
@@ -138,7 +172,7 @@ class HomeController extends Controller
         //gets all frequencies 
         $frequencies = $this->homeRepository->getFrequencies();
 
-        return view('add-invoice', array('clients' => $clients, 'frequencies' => $frequencies));
+        return view('invoices.add-invoice', array('clients' => $clients, 'frequencies' => $frequencies));
     }
 
     public function storeInvoice(Request $request)
@@ -166,7 +200,7 @@ class HomeController extends Controller
         //gets all invoices and their information 
         $invoicesList = $this->homeRepository->getInvoices();
 
-        return view('invoices', array('invoicesList' => $invoicesList));
+        return view('invoices.index', array('invoicesList' => $invoicesList));
     }
 
     public function editInvoice($invoice_id)
@@ -183,7 +217,7 @@ class HomeController extends Controller
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
 
-        return view('edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'frequencies' => $frequencies, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
+        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'frequencies' => $frequencies, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
     }
 
     public function updateInvoice(Request $request)
@@ -214,15 +248,15 @@ class HomeController extends Controller
         //gets all invoices and their information 
         $invoicesList = $this->homeRepository->getInvoices();
 
-        return view('invoices', array('invoicesList' => $invoicesList));
+        return view('invoices.index', array('invoicesList' => $invoicesList));
     }
 
     public function printInvoice($invoice_id)
     {
         //gets all invoices and their information 
-        $invoiceInfo = $this->homeRepository->getInvoiceClient($invoice_id);
+        $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
-        return view('print-invoice', array('invoice_id' => $invoice_id,'invoiceInfo' => $invoiceInfo, 'invoiceItems' => $invoiceItems));
+        return view('invoices.print-invoice', array('invoice_id' => $invoice_id,'invoiceInfo' => $invoiceInfo, 'invoiceItems' => $invoiceItems));
     }
 
     public function hideInvoice($invoice_id)
@@ -233,7 +267,7 @@ class HomeController extends Controller
         $invoicesList = $invoicesList = $this->homeRepository->getInvoices();
         $request->session()->flash('flash_message','Invoice Successfully removed!');
 
-        return view('invoices', array('invoicesList' => $invoicesList));
+        return view('invoices.index', array('invoicesList' => $invoicesList));
     }
 
 
@@ -245,12 +279,19 @@ class HomeController extends Controller
     {
         //gets all transactions and their information 
         $transactionsList = $this->homeRepository->getTransactions();
-        return view('transactions', array('transactionsList' => $transactionsList));
+        return view('transactions.index', array('transactionsList' => $transactionsList));
+    }
+
+    public function transactionDetails($transaction_id)
+    {
+        //gets all information of a specific transaction
+        $transactionInfo = $this->homeRepository->getTransaction($transaction_id);
+        return view('transactions.transaction-details', array('transactionInfo' => $transactionInfo));
     }
 
     public function addTransaction()
     {
-        return view('add-transaction');
+        return view('transactions.add-transaction');
     }
 
     public function storeTransaction(Request $request)
@@ -268,14 +309,14 @@ class HomeController extends Controller
         //gets all transactions and their information 
         $transactionsList = $this->homeRepository->getTransactions();
 
-        return view('transactions', array('transactionsList' => $transactionsList));
+        return view('transactions.index', array('transactionsList' => $transactionsList));
     }
 
     public function editTransaction($transaction_id)
     {
         //gets all information of a specific transaction
         $transactionInfo = $this->homeRepository->getTransaction($transaction_id);
-        return view('edit-transaction', array('transaction_id' => $transaction_id, 'transactionInfo' => $transactionInfo));
+        return view('transactions.edit-transaction', array('transaction_id' => $transaction_id, 'transactionInfo' => $transactionInfo));
     }
 
     public function updateTransaction(Request $request)
@@ -294,7 +335,7 @@ class HomeController extends Controller
         //gets all transactions and their information 
         $transactionsList = $this->homeRepository->getTransactions();
 
-        return view('transactions', array('transactionsList' => $transactionsList));
+        return view('transactions.index', array('transactionsList' => $transactionsList));
     }
 
     public function hideTransaction($transaction_id)
@@ -305,7 +346,7 @@ class HomeController extends Controller
         $transactionsList = $this->homeRepository->getTransactions();
         $request->session()->flash('flash_message','Transaction Successfully removed!');
 
-        return view('transactions', array('transactionsList' => $transactionsList));
+        return view('transactions.index', array('transactionsList' => $transactionsList));
     }
 
 }
