@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-            Edit Client
+            Edit Supplier
         </h1>
     </div>
 </div>
@@ -17,8 +17,8 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        @foreach($clientInfo as $ci)
-                        {!! Form::open(array('route' => array('edit_client_path', $client_id))) !!}
+                        @foreach($supplierInfo as $ci)
+                        {!! Form::open(array('route' => array('edit_supplier_path', $supplier_id))) !!}
                         <input type="hidden" class="form-control" id="source_id" name="source_id" value="{{ $ci->source_id }}">
                             <div class="form-group">
                                 <label>Name</label>
@@ -53,7 +53,7 @@
                                 <input type="text" class="form-control" name="source_accounting" value="{{ $ci->accounting_id }}">
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-lg">Edit Client</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Edit Supplier</button>
                             </div>
                         {!! Form::close() !!}
                         @endforeach
@@ -68,6 +68,6 @@
     <!-- /.col-lg-12 -->
 </div>
 
-<a href="{{ route('clients_path') }}" class="btn btn-default btn-lg">Go Back to Client's List</a>
+<a href="{{ route('suppliers_path') }}" class="btn btn-default btn-lg">Go Back to Supplier's List</a>
 
 @endsection

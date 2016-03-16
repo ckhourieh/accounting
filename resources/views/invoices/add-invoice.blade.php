@@ -19,11 +19,6 @@
                     <div class="col-lg-12">
                         {!! Form::open(array('route' => 'add_invoice_path')) !!}
                             <div class="form-group">
-                                <label>Invoice ID</label>
-                                <input type="text" class="form-control" name="invoice_id" placeholder="Enter Invoice ID">
-                            </div>
-
-                            <div class="form-group">
                                 <label>Invoice Title</label>
                                 <input type="text" class="form-control" name="invoice_title" placeholder="Enter Invoice Title">
                             </div>
@@ -32,7 +27,7 @@
                                 <label>Client Name</label>
                                 <select class="form-control" name="invoice_client">
                                     @foreach($clients as $cl)
-                                    <option value="{{ $cl->client_id }}">{{ $cl->name }}</option>
+                                    <option value="{{ $cl->source_id }}">{{ $cl->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -45,15 +40,6 @@
                                         <span class="glyphicon glyphicon-th"></span>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Frequency Of This Invoice</label>
-                                <select class="form-control" name="invoice_frequency">
-                                    @foreach($frequencies as $f)
-                                    <option value="{{ $f->frequency_id }}">{{ $f->frequency }}</option>
-                                    @endforeach
-                                </select>
                             </div>
 
                             <div class="form-group">

@@ -46,6 +46,9 @@
             <li>
                 <a class="{{ Request::path() == 'clients' ? 'active-menu' : '' }}" href="{{ route('clients_path') }}"><i class="fa fa-group"></i> Clients</a>
             </li>
+            <li>
+                <a class="{{ Request::path() == 'suppliers' ? 'active-menu' : '' }}" href="{{ route('suppliers_path') }}"><i class="fa fa-truck"></i> Suppliers</a>
+            </li>
 			<li>
                 <a class="{{ Request::path() == 'invoices' ? 'active-menu' : '' }}" href="{{ route('invoices_path') }}"><i class="fa fa-file-excel-o"></i> Invoices</a>
             </li>

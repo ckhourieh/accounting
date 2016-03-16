@@ -19,11 +19,7 @@
                     <div class="col-lg-12">
                         @foreach($invoiceInfo as $ii)
                         {!! Form::open(array('route' => array('edit_invoice_path', $invoice_id))) !!}
-                        <input type="hidden" class="form-control" id="id" name="id" value="{{ $ii->id }}">
-                            <div class="form-group">
-                                <label>Invoice ID</label>
-                                <input type="text" class="form-control" name="invoice_id" value="{{ $ii->invoice_id }}">
-                            </div>
+                        <input type="hidden" class="form-control" id="invoice_id" name="invoice_id" value="{{ $ii->invoice_id }}">
 
                             <div class="form-group">
                                 <label>Invoice Title</label>

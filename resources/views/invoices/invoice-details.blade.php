@@ -34,11 +34,11 @@
                     @endforeach
                 </div>
                 <div class="panel-heading">Status</div>
-                <div class="panel-body"></div>
+                <div class="panel-body">{{ $ii->status_name }}</div>
                 <div class="panel-heading">Paid</div>
-                <div class="panel-body">{{ $ii->paid }}</div>
-                <div class="panel-heading">Type</div>
-                <div class="panel-body"></div>
+                <div class="panel-body">$ {{ $ii->paid }}.00</div>
+                <div class="panel-heading">Remaining</div>
+                <div class="panel-body">$ {{ $ii->amount - $ii->paid }}.00</div>
                 <div class="panel-heading">Creation Date</div>
                 <div class="panel-body">{{ $ii->created_at }}</div>
             @endforeach

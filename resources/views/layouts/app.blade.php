@@ -15,7 +15,9 @@
     <link href="/css/custom-styles.css" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-
+    <!-- Morris Chart Styles-->
+    <link href="/js/morris/morris.min.css" rel="stylesheet"/>
+    
     <!-- jQuery Js -->
     <script src="/js/jquery-1.10.2.js"></script>
 </head>

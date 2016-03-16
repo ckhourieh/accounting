@@ -50,25 +50,25 @@ Route::group(['middleware' => 'web'], function () {
     ]);
 
     //Client total amount due
-    Route::get('/total-amount-due-{client_id}', [
+    Route::get('/clients/total-amount-due-{client_id}', [
         'as' => 'total_amount_due_path',
         'uses' => 'HomeController@totalAmountDue'
     ]);
 
     //Client total income
-    Route::get('/total-income-{client_id}', [
+    Route::get('/clients/total-income-{client_id}', [
         'as' => 'total_income_path',
         'uses' => 'HomeController@totalIncome'
     ]);
 
     //Client Next Payments
-    Route::get('/next-payments-{client_id}', [
+    Route::get('/clients/next-payments-{client_id}', [
         'as' => 'next_payments_path',
         'uses' => 'HomeController@nextPayments'
     ]);
 
     //Timeline
-    Route::get('/timeline-{client_id}', [
+    Route::get('/clients/timeline-{client_id}', [
         'as' => 'client_timeline_path',
         'uses' => 'HomeController@clientTimeline'
     ]);
@@ -107,6 +107,69 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/clients/hide-client-{client_id}', [
         'as' => 'hide_client_path',
         'uses' => 'HomeController@hideClient'
+    ]);
+
+
+
+
+    //Suppliers
+    Route::get('/suppliers', [
+        'as' => 'suppliers_path',
+        'uses' => 'HomeController@suppliers'
+    ]);
+
+    //Supplier details
+    Route::get('/supplier-{supplier_id}', [
+        'as' => 'view_supplier_details_path',
+        'uses' => 'HomeController@supplierDetails'
+    ]);
+
+    //Supplier total amount spent
+    Route::get('/suppliers/total-amount-spent-{supplier_id}', [
+        'as' => 'total_amount_spent_path',
+        'uses' => 'HomeController@totalAmountSpent'
+    ]);
+
+    //Timeline
+    Route::get('/suppliers/timeline-{supplier_id}', [
+        'as' => 'supplier_timeline_path',
+        'uses' => 'HomeController@supplierTimeline'
+    ]);
+
+    //Add supplier
+    Route::get('/suppliers/add-supplier', [
+        'as' => 'add_supplier_path',
+        'uses' => 'HomeController@addSupplier'
+    ]);
+
+    //Add supplier
+    Route::post('/suppliers/add-supplier', [
+        'as' => 'add_supplier_path',
+        'uses' => 'HomeController@storeSupplier'
+    ]);
+
+    //Edit supplier
+    Route::get('/suppliers/edit-supplier-{supplier_id}', [
+        'as' => 'edit_supplier_path',
+        'uses' => 'HomeController@editSupplier'
+    ]);
+
+    //Edit supplier
+    Route::post('/suppliers/edit-supplier-{supplier_id}', [
+        'as' => 'edit_supplier_path',
+        'uses' => 'HomeController@updateSupplier'
+    ]);
+
+    //Hide supplier
+    Route::get('/suppliers/hide-supplier-{supplier_id}', [
+        'as' => 'hide_supplier_path',
+        'uses' => 'HomeController@hideSupplier'
+    ]);
+
+    //Hide supplier
+    Route::post('/suppliers/hide-supplier-{supplier_id}', [
+        'as' => 'hide_supplier_path',
+        'uses' => 'HomeController@hideSupplier'
     ]);
 
 

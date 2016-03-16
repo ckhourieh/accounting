@@ -15,7 +15,7 @@
         <div class="panel panel-default">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Income / Outcome for : {{ $clientInfo[0]->name }}
+                    Income / Outcome for : {{ $supplierInfo[0]->name }}
                 </div>
                 <div class="panel-body">
                     <div id="morris-bar-chart"></div>
@@ -26,7 +26,7 @@
 </div>
 <!-- /.row (nested) -->
 
-<a href="{{ route('clients_path') }}" class="btn btn-default btn-lg">Go Back to Client's List</a>
+<a href="{{ route('suppliers_path') }}" class="btn btn-default btn-lg">Go Back to Supplier's List</a>
 
 
 <!-- Morris Chart Js -->
@@ -91,7 +91,10 @@
         xkey: 'y',
         ykeys: ['a', 'b'],
         labels: ['Income', 'Outcome'],
-        barColors: ['#5cb85c','#d9534f','#A8E9DC'],
+         barColors: [
+    '#5cb85c','#d9534f',
+    '#A8E9DC' 
+    ],
         hideHover: 'auto',
         resize: true
     });

@@ -56,28 +56,41 @@ class HomeController extends Controller
     public function clientDetails($client_id)
     {
         //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getClient($client_id);
-        return view('clients.client-details', array('clientInfo' => $clientInfo));
+        $clientInfo = $this->homeRepository->getSource($client_id);
+        //gets all due invoices for a client
+        $dueInvoicesList = $this->homeRepository->getDueInvoices($client_id);
+        //gets all payed invoices for a client
+        $payedInvoicesList = $this->homeRepository->getPayedInvoices($client_id);
+
+        return view('clients.client-details', array('clientInfo' => $clientInfo, 'dueInvoicesList' => $dueInvoicesList, 'payedInvoicesList' => $payedInvoicesList));
     }
 
     public function totalAmountDue($client_id)
     {
-        return view('clients.total-amount-due');
+        //gets all due invoices for a client
+        $dueInvoicesList = $this->homeRepository->getDueInvoices($client_id);
+        return view('clients.total-amount-due', array('dueInvoicesList' => $dueInvoicesList));
     }
 
     public function totalIncome($client_id)
     {
-        return view('clients.total-income');
+        //gets all payed invoices for a client
+        $payedInvoicesList = $this->homeRepository->getPayedInvoices($client_id);
+        return view('clients.total-income', array('payedInvoicesList' => $payedInvoicesList));
     }
 
     public function nextPayments($client_id)
     {
-        return view('clients.nextpayments');
+        //gets all due invoices for a client
+        $dueInvoicesList = $this->homeRepository->getDueInvoices($client_id);
+        return view('clients.next-payments', array('dueInvoicesList' => $dueInvoicesList));
     }
 
     public function clientTimeline($client_id)
     {
-        return view('clients.timeline');
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getSource($client_id);
+        return view('clients.timeline', array('clientInfo' => $clientInfo));
     }
 
     public function addClient()
@@ -107,23 +120,23 @@ class HomeController extends Controller
     public function editClient($client_id)
     {
         //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getClient($client_id);
+        $clientInfo = $this->homeRepository->getSource($client_id);
         return view('clients.edit-client', array('client_id' => $client_id, 'clientInfo' => $clientInfo));
     }
 
     public function updateClient(Request $request)
     {
         //if the submit button of the edit client page is clicked, validate the input and update them in the database
-        $this->validate($request, ['client_id' => 'required',
-                                    'client_name' => 'required', 
-                                    'client_desc' => 'required', 
-                                    'client_email' => 'required',
-                                    'client_phone' => 'required',
-                                    'client_address' => 'required',
-                                    'client_owner' => 'required',
-                                    'client_contact' => 'required',
-                                    'client_accounting' => 'required']);
-        $this->homeRepository->updateClient($request->only('client_id', 'client_name', 'client_desc', 'client_email', 'client_phone', 'client_address', 'client_owner', 'client_contact', 'client_accounting'));
+        $this->validate($request, ['source_id' => 'required',
+                                    'source_name' => 'required', 
+                                    'source_desc' => 'required', 
+                                    'source_email' => 'required',
+                                    'source_phone' => 'required',
+                                    'source_address' => 'required',
+                                    'source_owner' => 'required',
+                                    'source_contact' => 'required',
+                                    'source_accounting' => 'required']);
+        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'));
         $request->session()->flash('flash_message','Client Successfully updated!');
 
         //gets all clients and their information 
@@ -131,9 +144,9 @@ class HomeController extends Controller
         return view('clients.index', array('clientsList' => $clientsList));
     }
 
-    public function hideClient($client_id)
+    public function hideClient(Request $request, $client_id)
     {
-        $this->homeRepository->hideClient($client_id);
+        $this->homeRepository->hideSource($client_id);
 
         //gets all clients and their information 
         $clientsList = $this->homeRepository->getClients();
@@ -141,6 +154,105 @@ class HomeController extends Controller
 
         return view('clients.index', array('clientsList' => $clientsList));
     }
+
+
+
+    /* --------------------------------
+    SUPPLIERS
+    -----------------------------------*/
+
+    public function suppliers()
+    {
+        //gets the list of all suppliers
+        $suppliersList = $this->homeRepository->getSuppliers();
+        return view('suppliers.index', array('suppliersList' => $suppliersList));
+    }
+
+    public function supplierDetails($supplier_id)
+    {
+        //gets all information of a specific supplier
+        $supplierInfo = $this->homeRepository->getSource($supplier_id);
+        //gets all spent invoices for a supplier
+        $spentTransactionsList = $this->homeRepository->getSpentTransactions($supplier_id);
+        return view('suppliers.supplier-details', array('supplierInfo' => $supplierInfo, 'spentTransactionsList' => $spentTransactionsList));
+    }
+
+    public function totalAmountSpent($supplier_id)
+    {
+        //gets all spent invoices for a supplier
+        $spentTransactionsList = $this->homeRepository->getSpentTransactions($supplier_id);
+        return view('suppliers.total-amount-spent', array('spentTransactionsList' => $spentTransactionsList));
+    }
+
+    public function supplierTimeline($supplier_id)
+    {
+        //gets all information of a specific supplier
+        $supplierInfo = $this->homeRepository->getSource($supplier_id);
+        return view('suppliers.timeline', array('supplierInfo' => $supplierInfo));
+    }
+
+    public function addSupplier()
+    {
+        return view('suppliers.add-supplier');
+    }
+
+    public function storeSupplier(Request $request)
+    {
+        //if the submit button of the add supplier page is clicked, validate the input and insert them in the database
+        $this->validate($request, ['supplier_name' => 'required', 
+                                    'supplier_desc' => 'required', 
+                                    'supplier_email' => 'required',
+                                    'supplier_phone' => 'required',
+                                    'supplier_address' => 'required',
+                                    'supplier_owner' => 'required',
+                                    'supplier_contact' => 'required',
+                                    'supplier_accounting' => 'required']);
+        $this->homeRepository->addSupplier($request->only('supplier_name', 'supplier_desc', 'supplier_email', 'supplier_phone', 'supplier_address', 'supplier_owner', 'supplier_contact', 'supplier_accounting'));
+        $request->session()->flash('flash_message','Supplier Successfully added!');
+
+        //gets all suppliers and their information 
+        $suppliersList = $this->homeRepository->getSuppliers();
+        return view('suppliers.index', array('suppliersList' => $suppliersList));
+    }
+
+    public function editSupplier($supplier_id)
+    {
+        //gets all information of a specific supplier
+        $supplierInfo = $this->homeRepository->getSource($supplier_id);
+        return view('suppliers.edit-supplier', array('supplier_id' => $supplier_id, 'supplierInfo' => $supplierInfo));
+    }
+
+    public function updateSupplier(Request $request)
+    {
+        //if the submit button of the edit supplier page is clicked, validate the input and update them in the database
+        $this->validate($request, ['source_id' => 'required',
+                                    'source_name' => 'required', 
+                                    'source_desc' => 'required', 
+                                    'source_email' => 'required',
+                                    'source_phone' => 'required',
+                                    'source_address' => 'required',
+                                    'source_owner' => 'required',
+                                    'source_contact' => 'required',
+                                    'source_accounting' => 'required']);
+        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'));
+        $request->session()->flash('flash_message','Supplier Successfully updated!');
+
+        //gets all suppliers and their information 
+        $suppliersList = $this->homeRepository->getSuppliers();
+        return view('suppliers.index', array('suppliersList' => $suppliersList));
+    }
+
+    public function hideSupplier(Request $request, $supplier_id)
+    {
+        $this->homeRepository->hideSource($supplier_id);
+
+        //gets all suppliers and their information 
+        $suppliersList = $this->homeRepository->getSuppliers();
+        $request->session()->flash('flash_message','Supplier Successfully removed!');
+
+        return view('suppliers.index', array('suppliersList' => $suppliersList));
+    }
+
 
 
     /* --------------------------------
@@ -176,20 +288,25 @@ class HomeController extends Controller
         $amount = 0;
         for($i=1;$i<=((count($request->all())-6)/2);$i++)
         {
-            //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
-            $this->validate($request, ['invoice_id' => 'required', 
-                                        'invoice_item_title_'.$i => 'required', 
-                                        'invoice_item_amount_'.$i => 'required']);
-            $this->homeRepository->addInvoiceItems($request->input('invoice_id'), $request->input('invoice_item_title_'.$i), $request->input('invoice_item_amount_'.$i));
             $amount = $amount + $request->input('invoice_item_amount_'.$i);
         }
 
         //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
-        $this->validate($request, ['invoice_id' => 'required', 
-                                    'invoice_title' => 'required', 
+        $this->validate($request, ['invoice_title' => 'required', 
                                     'invoice_client' => 'required',
                                     'invoice_date' => 'required']);
-        $this->homeRepository->addInvoice($request->only('invoice_id', 'invoice_title', 'invoice_client', 'invoice_date'), $amount);
+        $this->homeRepository->addInvoice($request->only('invoice_title', 'invoice_client', 'invoice_date'), $amount);
+
+        $lastInvoiceId = $this->homeRepository->getLastInvoiceId();
+
+        for($i=1;$i<=((count($request->all())-6)/2);$i++)
+        {
+            //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
+            $this->validate($request, ['invoice_item_title_'.$i => 'required', 
+                                        'invoice_item_amount_'.$i => 'required']);
+            $this->homeRepository->addInvoiceItems($lastInvoiceId, $request->input('invoice_item_title_'.$i), $request->input('invoice_item_amount_'.$i));
+        }
+
         $request->session()->flash('flash_message','Invoice Successfully added!');
 
         //gets all invoices and their information 
@@ -226,14 +343,13 @@ class HomeController extends Controller
         }
 
         //if the submit button of the edit invoice page is clicked, validate the input and update them in the database
-        $this->validate($request, ['id' => 'required',
-                                    'invoice_id' => 'required', 
+        $this->validate($request, ['invoice_id' => 'required', 
                                     'invoice_title' => 'required', 
                                     'invoice_client' => 'required',
                                     'invoice_date' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
-        $this->homeRepository->updateInvoice($request->only('id', 'invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
+        $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully updated!');
 
         //gets all invoices and their information 

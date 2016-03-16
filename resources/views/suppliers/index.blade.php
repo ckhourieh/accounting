@@ -5,11 +5,11 @@
 <div class="row">
     <div class="col-md-10">
         <h1 class="page-header">
-            Clients
+            Suppliers
         </h1>
     </div>
     <div class="col-md-2">
-        <a href="{{ route('add_client_path') }}" class="btn btn-default btn-lg pull-right">Add Client</a>
+        <a href="{{ route('add_supplier_path') }}" class="btn btn-default btn-lg pull-right">Add Supplier</a>
     </div>
 </div>
 
@@ -22,38 +22,30 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive">
-                <table id="clients" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                <table id="suppliers" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Next Payments</th>
-                            <th>Total Amount Due</th>
-                            <th>Total Income</th>
+                            <th>Total Amount Spent</th>
                             <th>Timeline</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($clientsList as $c)             
+                        @foreach($suppliersList as $c)             
                             <tr>
                                 <td>{{ $c->source_id }}</td>
-                                <td><a href="{{ route('view_client_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
-                                <td>{{ $c->next_payments }}</td>
+                                <td><a href="{{ route('view_supplier_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
                                 <td>
-                                    @if(isset($c->total_amount_due))
-                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ $c->total_amount_due }}.00</a>
+                                    @if(isset($c->total_amount_spent))
+                                    <a href="{{ route('total_amount_spent_path', $c->source_id) }}" style="color:#d9534f">$ {{ $c->total_amount_spent }}.00</a>
                                     @endif
                                 </td>
+                                <td><a href="{{ route('supplier_timeline_path', $c->source_id) }}">See Graph</a></td>
                                 <td>
-                                    @if(isset($c->total_income))
-                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ $c->total_income }}.00</a>
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('client_timeline_path', $c->source_id) }}">See Graph</a></td>
-                                <td>
-                                    <a href="{{ route('edit_client_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a href="{{ route('hide_client_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <a href="{{ route('edit_supplier_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a href="{{ route('hide_supplier_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -72,7 +64,7 @@
 <script src="/js/dataTables/dataTables.bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#clients').DataTable();
+        $('#suppliers').DataTable();
     });
 </script>
 
