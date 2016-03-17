@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Repositories\HomeRepository;
 use Session;
 use Mail;
+use PDF;
 
 class HomeController extends Controller
 {
@@ -272,7 +273,8 @@ class HomeController extends Controller
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
-        return view('invoices.invoice-details', array('invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
+        $data = array_merge($invoiceInfo, $invoiceItems);
+        return view('invoices.invoice-details', array('data' => $data));
     }
 
     public function addInvoice()
@@ -363,7 +365,37 @@ class HomeController extends Controller
         //gets all invoices and their information 
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
-        return view('invoices.print-invoice', array('invoice_id' => $invoice_id,'invoiceInfo' => $invoiceInfo, 'invoiceItems' => $invoiceItems));
+        $data = array_merge($invoiceInfo, $invoiceItems);
+        return view('invoices.print-invoice', array('data' => $data));
+    }
+
+    public function sendInvoice(Request $request, $invoice_id)
+    {
+        //gets all invoices and their information 
+        $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
+        $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
+        $data = array_merge($invoiceInfo, $invoiceItems);
+        $client_email = $invoiceInfo[0]->email;
+        Mail::send('invoices.print-invoice', array('data' => $data), function($message) use ($client_email)
+        {
+            $message->from('info@webneoo.com', 'Webneoo');
+            $message->to($client_email)->subject('Webneoo Invoice');
+        });
+
+        $request->session()->flash('flash_message','Invoice Successfully Sent!');
+        //gets all invoices and their information 
+        $invoicesList = $this->homeRepository->getInvoices();
+        return view('invoices.index', array('invoicesList' => $invoicesList));
+    }
+
+    public function downloadInvoice($invoice_id)
+    {
+        //gets all invoices and their information 
+        $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
+        $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
+        $data = array_merge($invoiceInfo, $invoiceItems);
+        $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data));
+        return $pdf->download('invoice.pdf');
     }
 
     public function hideInvoice($invoice_id)

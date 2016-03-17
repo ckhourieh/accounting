@@ -49,14 +49,23 @@
                                 <td></td>
                                 <td>$ {{ $i->amount }}.00</td>
                                 <td>{{ $i->status }}</td>
-                                <td>$ {{ $i->paid }}.00</td>
-                                <td>$ {{ $i->amount - $i->paid }}.00</td>
+                                <td style="color:#5cb85c">
+                                    @if($i->paid)
+                                        $ {{ $i->paid }}.00
+                                    @endif
+                                </td>
+                                <td style="color:#d9534f">
+                                    @if($i->amount - $i->paid)
+                                        $ {{ $i->amount - $i->paid }}.00
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('print_invoice_path', $i->invoice_id) }}" class="btnPrint"><i class="fa fa-print"></i></a>
-                                    <a href="javascript:DownloadInvoice();"><i class="fa fa-download"></i></a>
+                                    <a href="{{ route('download_invoice_path', $i->invoice_id) }}"><i class="fa fa-download"></i></a>
                                     @if($i->status != "Paid" || $i->status != "Incomplete")
                                         <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
                                     @endif
+                                    <a href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
                                     <a href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
@@ -77,14 +86,7 @@
 <!-- PRINT PAGE -->
 <script type="text/javascript" src="/js/jquery.printPage.js"></script>
 
-<script type="text/javascript" src="/js/html2canvas.js"></script>
-<script type="text/javascript" src="/js/download.js"></script>
-
 <script type="text/javascript">
-    function DownloadInvoice() {
-        window.location = "{{ route('print_invoice_path', $invoicesList[0]->invoice_id) }}";
-    }
-
     $(document).ready(function () {
         $('#clients').DataTable();
         $(".btnPrint").printPage();

@@ -217,10 +217,16 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@printInvoice'
     ]);
 
-    //Print Invoice
-    Route::post('/invoices/print-invoice-{invoice_id}', [
-        'as' => 'print_invoice_path',
-        'uses' => 'HomeController@printInvoice'
+    //Download Invoice
+    Route::get('/invoices/download-invoice-{invoice_id}', [
+        'as' => 'download_invoice_path',
+        'uses' => 'HomeController@downloadInvoice'
+    ]);
+
+    //Send Invoice
+    Route::get('/invoices/send-invoice-{invoice_id}', [
+        'as' => 'send_invoice_path',
+        'uses' => 'HomeController@sendInvoice'
     ]);
 
     //Hide Invoice
