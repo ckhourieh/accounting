@@ -5,11 +5,8 @@
 <div class="row">
     <div class="col-md-10">
         <h1 class="page-header">
-            Transactions
+            Total amount spent for {{ $spentTransactionsList[0]->supplier_name }}
         </h1>
-    </div>
-    <div class="col-md-2">
-        <a href="{{ route('add_transaction_path') }}" class="btn btn-default btn-lg pull-right">Add Transaction</a>
     </div>
 </div>
 
@@ -40,7 +37,7 @@
                                 <td><a href="{{ route('view_transaction_details_path', $i->transaction_id) }}">{{ $i->transaction_id }}</a></td>
                                 <td>{{ $i->date }}</td>
                                 <td>{{ $i->supplier_name }}</td>
-                                <td>$ {{ $i->amount }}.00</td>
+                                <td style="color:#d9534f">$ {{ number_format($i->amount) }}.00</td>
                                 <td>{{ $i->contact_name }}</td>
                                 <td>
                                     <a href="{{ route('edit_transaction_path', $i->transaction_id) }}"><i class="fa fa-pencil-square-o"></i></a>
@@ -64,7 +61,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#clients').DataTable();
+        $('#clients').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
     });
 </script>
 @endsection

@@ -39,7 +39,10 @@ class HomeController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        $socialMediaTotalDue = $this->homeRepository->getServiceDueInvoices(1);
+        $webDevelopmentTotalDue = $this->homeRepository->getServiceDueInvoices(2);
+        $emailsHostingTotalDue = $this->homeRepository->getServiceDueInvoices(3);
+        return view('dashboard', array('socialMediaTotalDue' => $socialMediaTotalDue, 'webDevelopmentTotalDue' => $webDevelopmentTotalDue, 'emailsHostingTotalDue' => $emailsHostingTotalDue));
     }
 
 
@@ -274,6 +277,7 @@ class HomeController extends Controller
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $data = array_merge($invoiceInfo, $invoiceItems);
+
         return view('invoices.invoice-details', array('data' => $data));
     }
 
@@ -281,32 +285,34 @@ class HomeController extends Controller
     {
         //gets all clients 
         $clients = $this->homeRepository->getClientNames();
-
-        return view('invoices.add-invoice', array('clients' => $clients));
+        //gets all services
+        $services = $this->homeRepository->getServices();
+        return view('invoices.add-invoice', array('clients' => $clients, 'services' => $services));
     }
 
     public function storeInvoice(Request $request)
     {
         $amount = 0;
-        for($i=1;$i<=((count($request->all())-6)/2);$i++)
+        //dd($request->all());
+        for($i=1;$i<=($request->input('item_number'));$i++)
         {
             $amount = $amount + $request->input('invoice_item_amount_'.$i);
         }
 
         //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
-        $this->validate($request, ['invoice_title' => 'required', 
-                                    'invoice_client' => 'required',
+        $this->validate($request, ['invoice_client' => 'required',
                                     'invoice_date' => 'required']);
-        $this->homeRepository->addInvoice($request->only('invoice_title', 'invoice_client', 'invoice_date'), $amount);
+        $this->homeRepository->addInvoice($request->only('invoice_client', 'invoice_date', 'invoice_next_payment'), $amount);
 
         $lastInvoiceId = $this->homeRepository->getLastInvoiceId();
 
-        for($i=1;$i<=((count($request->all())-6)/2);$i++)
+        for($i=1;$i<=($request->input('item_number'));$i++)
         {
             //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
-            $this->validate($request, ['invoice_item_title_'.$i => 'required', 
+            $this->validate($request, ['invoice_item_service_'.$i => 'required', 
+                                        'invoice_item_description_'.$i => 'required', 
                                         'invoice_item_amount_'.$i => 'required']);
-            $this->homeRepository->addInvoiceItems($lastInvoiceId, $request->input('invoice_item_title_'.$i), $request->input('invoice_item_amount_'.$i));
+            $this->homeRepository->addInvoiceItems($lastInvoiceId[0]->invoice_id, $request->input('invoice_item_service_'.$i), $request->input('invoice_item_description_'.$i), $request->input('invoice_item_amount_'.$i));
         }
 
         $request->session()->flash('flash_message','Invoice Successfully added!');
@@ -322,36 +328,39 @@ class HomeController extends Controller
         //gets all clients 
         $clients = $this->homeRepository->getClientNames();
 
+        //gets all statuses
+        $status = $this->homeRepository->getAllStatus();
+
         //get invoice items
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
 
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
 
-        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
+        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'status' => $status, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
     }
 
     public function updateInvoice(Request $request)
-    {
+    {   
+        //dd($request->all());
         $amount = 0;
-        for($i=1;$i<=((count($request->all())-9)/3);$i++)
+        for($i=1;$i<=($request->input('item_number')-1);$i++)
         {
             //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
             $this->validate($request, ['invoice_item_id_'.$i => 'required',
-                                        'invoice_item_title_'.$i => 'required', 
+                                        'invoice_item_description_'.$i => 'required', 
                                         'invoice_item_amount_'.$i => 'required']);
-            $this->homeRepository->updateInvoiceItems($request->input('invoice_item_id_'.$i), $request->input('invoice_item_title_'.$i), $request->input('invoice_item_amount_'.$i));
+            $this->homeRepository->updateInvoiceItems($request->input('invoice_item_id_'.$i), $request->input('invoice_item_description_'.$i), $request->input('invoice_item_amount_'.$i));
             $amount = $amount + $request->input('invoice_item_amount_'.$i);
         }
 
         //if the submit button of the edit invoice page is clicked, validate the input and update them in the database
         $this->validate($request, ['invoice_id' => 'required', 
-                                    'invoice_title' => 'required', 
                                     'invoice_client' => 'required',
                                     'invoice_date' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
-        $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_title', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
+        $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully updated!');
 
         //gets all invoices and their information 
@@ -375,12 +384,18 @@ class HomeController extends Controller
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
         $data = array_merge($invoiceInfo, $invoiceItems);
+        $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
+
         $client_email = $invoiceInfo[0]->email;
-        Mail::send('invoices.print-invoice', array('data' => $data), function($message) use ($client_email)
+
+        Mail::send('invoices.print-invoice', array('data' => $data), function($message) use($pdf, $client_email)
         {
             $message->from('info@webneoo.com', 'Webneoo');
             $message->to($client_email)->subject('Webneoo Invoice');
+            $message->attachData($pdf->output(), "invoice.pdf");
         });
+
+        $this->homeRepository->updateInvoiceStatusToSent($invoice_id);
 
         $request->session()->flash('flash_message','Invoice Successfully Sent!');
         //gets all invoices and their information 
@@ -394,7 +409,7 @@ class HomeController extends Controller
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);
         $data = array_merge($invoiceInfo, $invoiceItems);
-        $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data));
+        $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
         return $pdf->download('invoice.pdf');
     }
 

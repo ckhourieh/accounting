@@ -42,7 +42,7 @@
                                 <td>{{ $t->date }} </td>
                                 <td>{{ $t->invoice_id }}</td>
                                 <td>{{ $t->source_name }}</td>
-                                <td>{{ $t->contact }}</td>
+                                <td>{{ $t->contact_name }}</td>
                                 @if($t->type==0)
                                     <td style="color:#d9534f">$ {{ $t->amount }}.00</td>
                                     <td style="color:#d9534f"><i class="fa fa-arrow-down"></i></td>
@@ -51,8 +51,10 @@
                                     <td style="color:#5cb85c"><i class="fa fa-arrow-up"></i></td>
                                 @endif
                                 <td>
-                                    <a href="{{ route('edit_transaction_path', $t->transaction_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a href="{{ route('hide_transaction_path', $t->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    @if($t->type==0)
+                                        <a href="{{ route('edit_transaction_path', $t->transaction_id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    @endif
+                                    <a onclick="return confirm('Are you sure that you want to remove this transaction '{{$t->transaction_id}}'?');" href="{{ route('hide_transaction_path', $t->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -71,7 +73,9 @@
 <script src="/js/dataTables/dataTables.bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#clients').DataTable();
+        $('#clients').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
     });
 </script>
 

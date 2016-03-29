@@ -40,7 +40,6 @@
                                     <th>Invoice #</th>
                                     <th>Due Date</th>
                                     <th>Client Name</th>
-                                    <th>Title</th>
                                     <th>Next Payments</th>
                                     <th>Amount</th>
                                     <th>Status</th>
@@ -55,8 +54,11 @@
                                         <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
                                         <td>{{ $i->due_date }}</td>
                                         <td>{{ $i->name }}</td>
-                                        <td>{{ $i->title }}</td>
-                                        <td></td>
+                                        <td>
+                                            @if($i->next_payment != '0000-00-00')
+                                            {{ $i->next_payment }}
+                                            @endif
+                                        </td>
                                         <td>$ {{ $i->amount }}.00</td>
                                         <td>{{ $i->status }}</td>
                                         <td>$ {{ $i->paid }}.00</td>
@@ -84,7 +86,6 @@
                                     <th>Invoice #</th>
                                     <th>Due Date</th>
                                     <th>Client Name</th>
-                                    <th>Title</th>
                                     <th>Next Payments</th>
                                     <th>Amount</th>
                                     <th>Status</th>
@@ -99,8 +100,11 @@
                                         <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
                                         <td>{{ $i->due_date }}</td>
                                         <td>{{ $i->name }}</td>
-                                        <td>{{ $i->title }}</td>
-                                        <td></td>
+                                        <td>
+                                            @if($i->next_payment != '0000-00-00')
+                                            {{ $i->next_payment }}
+                                            @endif
+                                        </td>
                                         <td>$ {{ $i->amount }}.00</td>
                                         <td>{{ $i->status }}</td>
                                         <td>$ {{ $i->paid }}.00</td>
@@ -148,7 +152,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.table').DataTable();
+        $('.table').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
         $(".btnPrint").printPage();
 
         /* MORRIS BAR CHART

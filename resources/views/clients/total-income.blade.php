@@ -5,11 +5,8 @@
 <div class="row">
     <div class="col-md-10">
         <h1 class="page-header">
-            Invoices
+            Total income from {{ $payedInvoicesList[0]->name }}
         </h1>
-    </div>
-    <div class="col-md-2">
-        <a href="{{ route('add_invoice_path') }}" class="btn btn-default btn-lg pull-right">Add Invoice</a>
     </div>
 </div>
 
@@ -27,8 +24,8 @@
                         <tr>
                             <th>Invoice #</th>
                             <th>Due Date</th>
+                            <th>Creation Date</th>
                             <th>Client Name</th>
-                            <th>Title</th>
                             <th>Next Payments</th>
                             <th>Amount</th>
                             <th>Status</th>
@@ -42,18 +39,33 @@
                             <tr>
                                 <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
                                 <td>{{ $i->due_date }}</td>
+                                <td>{{ $i->created_at }}</td>
                                 <td>{{ $i->name }}</td>
-                                <td>{{ $i->title }}</td>
-                                <td></td>
-                                <td>$ {{ $i->amount }}.00</td>
+                                <td>
+                                    @if($i->next_payment != '0000-00-00')
+                                    {{ $i->next_payment }}
+                                    @endif
+                                </td>
+                                <td>$ {{ number_format($i->amount) }}.00</td>
                                 <td>{{ $i->status }}</td>
-                                <td>$ {{ $i->paid }}.00</td>
-                                <td>$ {{ $i->amount - $i->paid }}.00</td>
+                                <td style="color:#5cb85c">
+                                    @if($i->paid)
+                                        $ {{ number_format($i->paid) }}.00
+                                    @endif
+                                </td>
+                                <td style="color:#d9534f">
+                                    @if($i->amount - $i->paid)
+                                        $ {{ number_format($i->amount - $i->paid) }}.00
+                                    @endif
+                                </td>
                                 <td>
                                     <a href="{{ route('print_invoice_path', $i->invoice_id) }}" class="btnPrint"><i class="fa fa-print"></i></a>
-                                    <a href="javascript:DownloadInvoice();"><i class="fa fa-download"></i></a>
-                                    <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <a href="{{ route('download_invoice_path', $i->invoice_id) }}"><i class="fa fa-download"></i></a>
+                                    @if($i->status != "Paid" || $i->status != "Incomplete")
+                                        <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    @endif
+                                    <a href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
+                                    <a onclick="return confirm('Are you sure that you want to remove this invoice '{{$i->invoice_id}}' from the list?');" href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -73,16 +85,11 @@
 <!-- PRINT PAGE -->
 <script type="text/javascript" src="/js/jquery.printPage.js"></script>
 
-<script type="text/javascript" src="/js/html2canvas.js"></script>
-<script type="text/javascript" src="/js/download.js"></script>
-
 <script type="text/javascript">
-    function DownloadInvoice() {
-        window.location = "{{ route('print_invoice_path', $i->invoice_id) }}";
-    }
-
     $(document).ready(function () {
-        $('#clients').DataTable();
+        $('#clients').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
         $(".btnPrint").printPage();
     });
 </script>

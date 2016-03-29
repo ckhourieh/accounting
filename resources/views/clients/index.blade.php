@@ -39,21 +39,25 @@
                             <tr>
                                 <td>{{ $c->source_id }}</td>
                                 <td><a href="{{ route('view_client_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
-                                <td>{{ $c->next_payments }}</td>
                                 <td>
-                                    @if(isset($c->total_amount_due))
-                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ $c->total_amount_due }}.00</a>
+                                    @if(isset($c->total_income))
+                                    {{ $c->next_payments }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($c->total_amount_due - $c->total_income)
+                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due - $c->total_income) }}.00</a>
                                     @endif
                                 </td>
                                 <td>
                                     @if(isset($c->total_income))
-                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ $c->total_income }}.00</a>
+                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ number_format($c->total_income) }}.00</a>
                                     @endif
                                 </td>
                                 <td><a href="{{ route('client_timeline_path', $c->source_id) }}">See Graph</a></td>
                                 <td>
                                     <a href="{{ route('edit_client_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a href="{{ route('hide_client_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <a onclick="return confirm('Are you sure that you want to remove this client '{{$c->name}}' from the list?');" href="{{ route('hide_client_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -72,7 +76,9 @@
 <script src="/js/dataTables/dataTables.bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#clients').DataTable();
+        $('#clients').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
     });
 </script>
 

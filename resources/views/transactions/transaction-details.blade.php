@@ -17,11 +17,11 @@
                 <div class="panel-heading">Invoice ID</div>
                 <div class="panel-body">{{ $ti->invoice_id }}</div>
                 <div class="panel-heading">Client / Supplier</div>
-                <div class="panel-body">{{ $ti->source }}</div>
+                <div class="panel-body">{{ $ti->source_name }}</div>
                 <div class="panel-heading">Amount</div>
                 <div class="panel-body">$ {{ $ti->amount }}.00</div>
                 <div class="panel-heading">Contact</div>
-                <div class="panel-body">{{ $ti->contact }}</div>
+                <div class="panel-body">{{ $ti->contact_name }}</div>
                 <div class="panel-heading">Date</div>
                 <div class="panel-body">{{ $ti->date }}</div>
                 <div class="panel-heading">Type</div>

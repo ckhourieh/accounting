@@ -13,75 +13,66 @@
 <div class="row">
     <div class="col-lg-12">
 
-        <div style="width:21cm;height:29.7cm;margin:0 auto;margin-bottom:0.5cm;padding:30px;border:1px solid #eee;box-shadow:0 0 10px rgba(0, 0, 0, .15);font-size:16px;line-height:24px;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color:#555;background-color:#fff;">
-                                   
-            <table cellpadding="0" cellspacing="0" style="width:100%;line-height:inherit;text-align:left;">
-                <tr>
-                    <td colspan="2" style="padding:5px;vertical-align: top;">
-                        <table style="width:100%;line-height:inherit;text-align:left;">
-                            <tr>
-                                <td style="padding:5px;vertical-align:top;padding-bottom:20px;font-size:45px;line-height:45px;color:#333;">
-                                    <img src="/images/logo.png" style="width:100%;max-width:300px;">
-                                </td>
-                                
-                                <td style="padding:5px;vertical-align:top;text-align:right;padding-bottom:20px;">
-                                    Invoice #: {{ $data[0]->invoice_id }}<br>
-                                    Created: {{ $data[0]->created_at }}<br>
-                                    Due: {{ $data[0]->due_date }}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td colspan="2" style="padding:5px;vertical-align:top;">
-                        <table style="width:100%;line-height:inherit;text-align:left;">
-                            <tr>
-                                <td style="padding:5px;vertical-align:top;padding-bottom:40px;">
-                                    {{ $data[0]->address }}
-                                </td>
-                                
-                                <td style="padding:5px;vertical-align:top;text-align:right;padding-bottom:40px;">
-                                    {{ $data[0]->client_name }}<br>
-                                    {{ $data[0]->contact_name }}<br>
-                                    {{ $data[0]->email }}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td style="padding:5px;vertical-align:top;background:#eee;border-bottom:1px solid #ddd;font-weight:bold;">
-                        Item
-                    </td>
-                    
-                    <td style="padding:5px;vertical-align:top;text-align:right;background:#eee;border-bottom:1px solid #ddd;font-weight:bold;">
-                        Price
-                    </td>
-                </tr>
+        <div style="width:21cm;height:29.7cm;margin:0 auto;margin-bottom:0.5cm;padding:30px;border:1px solid #eee;box-shadow:0 0 10px rgba(0, 0, 0, .15);font-size:14px;line-height:24px;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color:#555;background-color:#fff;">
 
-                @for($i=1; $i<sizeof($data); $i++) 
-                    <tr>
-                        <td style="padding:5px;vertical-align:top;">
-                            {{ $data[$i]->title }}
-                        </td>
-                        
-                        <td style="padding:5px;vertical-align:top;text-align:right">
-                            ${{ $data[$i]->item_amount }}.00
-                        </td>
-                    <tr>
-                @endfor
+            <ul style="list-style-type:none; height:180px; padding: 0 30px;">
+                <li style="float:left; width:50%; display:inline-block; margin-top:20px;"><img src="http://accounting.dev/images/logo.png" style="width:100%;max-width:300px;"></li>
+                <li style="float:right; width:50%; text-align:right; display:inline-block;">
+                    <h1>INVOICE</h1><br>
+                    <b>Webneoo</b> <br>
+                    Jal El Dib Main Road <br>
+                    Mallah Center - 2nd Floor <br>
+                    Beirut, Lebanon
+                </li>
+            </ul>
+
+            <hr>
+
+            <ul style="list-style-type:none; height:180px; padding: 0 30px;">
+                <li style="float:left; width:50%; display:inline-block;">
+                    <h6 style="color:#666">BILL TO</h6>
+                    <b>{{ $data[0]->client_name }}</b><br>
+                    {{ $data[0]->address }}<br>
+                    Financial #: {{ $data[0]->accounting_id }}<br>
+                    {{ $data[0]->phone }}
+                </li>
+                <li style="float:right; width:50%; text-align:right; display:inline-block; line-height:28px">
+                    <b>Invoice Number: </b>{{ $data[0]->invoice_id }}<br>
+                    <b>Invoice Date: </b>{{ $data[0]->created_at }}<br>
+                    <b>Payment Due: </b></b>{{ $data[0]->due_date }} <br>
+                    <b>Amount Due (USD): ${{ $data[0]->amount }}.00</b>
+                </li>
+            </ul>
+
+            <ul style="list-style-type:none; height:35px; background:#000; padding: 0 30px;">
+                <li style="padding:5px; font-weight:bold; width:50%; float:left; display:inline-block; color:#fff;">
+                    Item
+                </li>
                 
-                <tr>
-                    <td style="padding:5px;vertical-align:top;"></td>
+                <li style="padding:5px; text-align:right; font-weight:bold; width:50%; float:right; display:inline-block; color:#fff;">
+                    Price
+                </li>
+            </ul>
+
+            <?php for($i=1; $i<sizeof($data); $i++) { ?>
+                <ul style="list-style-type:none; padding: 0 30px;">
+                    <li style="padding:5px; float:left; width:80%; display:inline-block;">
+                        <b>{{ $data[$i]->service_title }}</b><br>
+                        {{ $data[$i]->description }}
+                    </li>
                     
-                    <td style="padding:5px;vertical-align:top;text-align:right;border-top:2px solid #eee;font-weight:bold;">
-                       Total: ${{ $data[0]->amount }}.00
-                    </td>
-                </tr>
-            </table>
+                    <li style="padding:5px; text-align:right; float:right; width:20%; display:inline-block;">
+                        ${{ $data[$i]->item_amount }}.00
+                    </li>
+                </ul>
+            <?php } ?>
+            
+            <ul style="list-style-type:none; padding: 0 30px;">
+                <li style="padding:5px; float:left; width:50%; display:inline-block;"></li>
+                <li style="padding:5px; text-align:right; border-top:2px solid #eee; font-weight:bold; float:right; width:50%; display:inline-block;">
+                   Total: ${{ $data[0]->amount }}.00
+                </li>
+            </ul>
 
         </div>
 

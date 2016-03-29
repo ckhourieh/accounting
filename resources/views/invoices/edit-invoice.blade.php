@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-            Edit Invoice
+            Edit Invoice # {{ $invoiceInfo[0]->invoice_id }}
         </h1>
     </div>
 </div>
@@ -21,19 +21,8 @@
                         {!! Form::open(array('route' => array('edit_invoice_path', $invoice_id))) !!}
                         <input type="hidden" class="form-control" id="invoice_id" name="invoice_id" value="{{ $ii->invoice_id }}">
 
-                            <div class="form-group">
-                                <label>Invoice Title</label>
-                                <input type="text" class="form-control" name="invoice_title" value="{{ $ii->title }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Client Name</label>
-                                <select class="form-control" name="invoice_client">
-                                    @foreach($clients as $cl)
-                                    <option value="{{ $cl->client_id }}" <?php if($ii->client_id == '{{ $cl->client_id }}') echo 'selected="selected"'; ?>>{{ $cl->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <h3>{{ $ii->client_name }}</h3>
+                            <br>
 
                             <div class="form-group">
                                 <label>Amount</label>
@@ -54,51 +43,45 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Frequency Of This Invoice</label>
-                                <select class="form-control" name="invoice_frequency">
-                                    @foreach($frequencies as $f)
-                                    <option value="{{ $f->frequency_id }}" <?php if($ii->frequency_id == '{{ $f->frequency_id }}') echo 'selected="selected"'; ?>>{{ $f->frequency }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
                             <?php $i=1; ?>
                             @foreach($invoiceItems as $in)
-                            <input type="hidden" class="form-control" name="invoice_item_id_{{$i}}" value="{{ $in->invoice_item_id }}">
-                            <div class="form-group">
-                                <label>Item Title</label>
-                                <input type="text" class="form-control" name="invoice_item_title_{{$i}}" value="{{ $in->title }}">
-                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="hidden" class="form-control" name="invoice_item_id_{{$i}}" value="{{ $in->invoice_item_id }}">
 
-                            <div class="form-group">
-                                <label>Amount</label>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon">$</span>
-                                    <input type="text" class="form-control" name="invoice_item_amount_{{$i}}" value="{{ $in->item_amount }}">
-                                    <span class="input-group-addon">.00</span>
+                                    <div class="form-group">
+                                        <p>{{ $in->service_title }}</p>
+                                    </div>
+
+                                    <div class="form-group col-sm-6">
+                                        <label>Description</label>
+                                        <textarea class="form-control" name="invoice_item_description_{{$i}}">{{ $in->description }}</textarea>
+                                    </div>
+
+                                    <div class="form-group col-sm-6">
+                                        <label>Amount</label>
+                                        <div class="form-group input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input type="text" class="form-control" name="invoice_item_amount_{{$i}}" value="{{ $in->item_amount }}">
+                                            <span class="input-group-addon">.00</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <?php $i++; ?> 
                             @endforeach
 
+                            <input type="hidden" class="form-control" name="item_number" value="{{ $i }}">
+
                             <div class="form-group">
                                 <label>Status</label>
+                                @foreach($status as $s)
                                 <div class="radio">
                                     <label>
-                                        <input type="radio" name="invoice_status" id="invoice_status1" value="0" <?php if($ii->status == '0') echo 'checked="checked"'; ?>>Not Paid
+                                        <input type="radio" name="invoice_status" id="invoice_status1" value="{{$s->status_id}}" <?php if($ii->status_id == $s->status_id) echo 'checked="checked"'; ?>>{{$s->name}}
                                     </label>
                                 </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="invoice_status" id="invoice_status2" value="1" <?php if($ii->status == '1') echo 'checked="checked"'; ?>>Paid
-                                    </label>
-                                </div>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="invoice_status" id="invoice_status3" value="2" <?php if($ii->status == '2') echo 'checked="checked"'; ?>>Not Complited
-                                    </label>
-                                </div>
+                                @endforeach
                             </div>
 
                             <div class="form-group">

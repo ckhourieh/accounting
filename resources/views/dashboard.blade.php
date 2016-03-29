@@ -21,7 +21,7 @@
                 <i class="fa fa-bar-chart-o fa-5x"></i>
             </div>
             <div class="panel-right pull-right">
-                <h3>8,457</h3>
+                <h3>{{ $socialMediaTotalDue[0]->total }}</h3>
                <strong> Total Due Social Media </strong>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 <i class="fa fa-shopping-cart fa-5x"></i>
             </div>
             <div class="panel-right pull-right">
-                <h3>52,160 </h3>
+                <h3>{{ $webDevelopmentTotalDue[0]->total }}</h3>
                 <strong> Total Due Web Development </strong>
             </div>
         </div>
@@ -43,7 +43,7 @@
                 <i class="fa fa fa-comments fa-5x"></i>
             </div>
             <div class="panel-right pull-right">
-                <h3>25,823 </h3>
+                <h3>{{ $emailsHostingTotalDue[0]->total }}</h3>
                 <strong> Total Due Emails & Hosting </strong>
             </div>
         </div>
@@ -54,7 +54,7 @@
                 <i class="fa fa-users fa-5x"></i>
             </div>
             <div class="panel-right pull-right">
-                <h3>26,337 </h3>
+                <h3>{{ $socialMediaTotalDue[0]->total + $webDevelopmentTotalDue[0]->total + $emailsHostingTotalDue[0]->total }}</h3>
                 <strong> Total Due </strong>
             </div>
         </div>

@@ -45,7 +45,7 @@
                                 <td><a href="{{ route('supplier_timeline_path', $c->source_id) }}">See Graph</a></td>
                                 <td>
                                     <a href="{{ route('edit_supplier_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a href="{{ route('hide_supplier_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <a onclick="return confirm('Are you sure that you want to remove this supplier '{{$c->name}}' from the list?');" href="{{ route('hide_supplier_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -64,7 +64,9 @@
 <script src="/js/dataTables/dataTables.bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#suppliers').DataTable();
+        $('#suppliers').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
     });
 </script>
 

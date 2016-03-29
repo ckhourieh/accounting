@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-            Edit Supplier
+            Edit Supplier : {{ $supplierInfo[0]->name }}
         </h1>
     </div>
 </div>

@@ -15,12 +15,31 @@ class HomeRepository {
     ------------------------------------*/
     public function getClients()
     {
-        $q = \DB::select("SELECT A.*, SUM(B.amount) as total_amount_due, SUM(C.amount) as total_income, COUNT(B.invoice_id) as next_payments
-                          FROM ta_sources as A 
-                          LEFT JOIN ta_invoices as B ON A.source_id = B.client_id AND B.status_id != 3 AND B.status_id != 6
-                          LEFT JOIN ta_invoices as C ON A.source_id = C.client_id AND C.status_id = 3 AND C.status_id != 6
-                          WHERE A.hidden = '0' AND A.type_id = 1
-                          GROUP BY A.source_id");
+        $q = \DB::select("SELECT T.*, SUM(T.total_amount_due) as total_amount_due, SUM(T.total_income) as total_income, SUM(T.next_payments) as next_payments
+                          FROM (SELECT A.*, NULL as total_amount_due, NULL as total_income, COUNT(D.invoice_id) as next_payments
+                                FROM ta_sources as A
+                                LEFT JOIN ta_invoices as D ON A.source_id = D.client_id AND D.next_payment > CURDATE()
+                                WHERE A.hidden = '0' AND A.type_id = 1
+                                GROUP BY A.source_id
+                                UNION
+                                SELECT A.*, SUM(B.amount) as total_amount_due, NULL as total_income, NULL as next_payments
+                                FROM ta_sources as A
+                                LEFT JOIN ta_invoices as B ON A.source_id = B.client_id AND B.status_id != 3 AND B.status_id != 6
+                                WHERE A.hidden = '0' AND A.type_id = 1
+                                GROUP BY A.source_id
+                                UNION
+                                SELECT A.*, NULL as total_amount_due, SUM(C.paid) as total_income, NULL as next_payments
+                                FROM ta_sources as A
+                                LEFT JOIN ta_invoices as C ON A.source_id = C.client_id
+                                WHERE A.hidden = '0' AND A.type_id = 1
+                                GROUP BY A.source_id) as T
+                          GROUP BY T.source_id");
+        return $q;
+    }
+
+    public function getAllStatus()
+    {
+        $q = \DB::select("SELECT * FROM ta_status ORDER BY name ASC");
         return $q;
     }
 
@@ -150,11 +169,29 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoices()
     {
-        $q = \DB::select("SELECT A.invoice_id, A.title, A.client_id, A.amount, A.due_date, DATE(A.created_at) as created_at, C.name as status, A.paid, B.name, B.email
+        $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, A.next_payment, DATE(A.created_at) as created_at, A.status_id, C.name as status, 
+                        A.paid, B.name, B.email
                         FROM ta_invoices as A 
                         JOIN ta_sources as B ON A.client_id = B.source_id 
                         JOIN ta_status as C ON A.status_id = C.status_id
                         WHERE A.hidden = '0'");
+        return $q;
+    }
+
+
+    /*----------------------------------
+    Get all Social Media invoices not yet paid
+    ------------------------------------*/
+    public function getServiceDueInvoices($service_id)
+    {
+        $q = \DB::select("SELECT SUM(A.amount) as total, C.title as service_name, A.invoice_id
+                          FROM ta_invoices as A 
+                          JOIN ta_invoice_items as B ON A.invoice_id = B.invoice_id 
+                          JOIN ta_service_types as C ON B.service_type_id = C.service_type_id
+                          WHERE A.hidden = '0'
+                          AND A.status_id != '3' AND A.status_id != '6'
+                          AND B.service_type_id = :service_id",
+            array(':service_id' => $service_id));
         return $q;
     }
 
@@ -163,7 +200,8 @@ class HomeRepository {
     ------------------------------------*/
     public function getDueInvoices($client_id)
     {
-        $q = \DB::select("SELECT A.invoice_id, A.title, A.client_id, A.amount, A.due_date, C.name as status, A.paid, B.name, B.email
+        $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, DATE(A.created_at) as created_at, A.next_payment, C.name as status, A.paid, 
+                        B.name, B.email
                         FROM ta_invoices as A 
                         JOIN ta_sources as B ON A.client_id = B.source_id 
                         JOIN ta_status as C ON A.status_id = C.status_id
@@ -179,12 +217,13 @@ class HomeRepository {
     ------------------------------------*/
     public function getPayedInvoices($client_id)
     {
-        $q = \DB::select("SELECT A.invoice_id, A.title, A.client_id, A.amount, A.due_date, C.name as status, A.paid, B.name, B.email
+        $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, DATE(A.created_at) as created_at, A.next_payment, C.name as status, A.paid, 
+                        B.name, B.email
                         FROM ta_invoices as A 
                         JOIN ta_sources as B ON A.client_id = B.source_id 
                         JOIN ta_status as C ON A.status_id = C.status_id
                         WHERE A.hidden = '0'
-                        AND A.status_id = '3' AND A.status_id != '6'
+                        AND A.paid != '0'
                         AND A.client_id = :source_id",
             array(':source_id' => $client_id));
         return $q;
@@ -195,11 +234,24 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoice($invoice_id)
     {
-        $q = \DB::select("SELECT A.invoice_id, A.title, A.due_date, DATE(A.created_at) as created_at, A.amount, A.paid, 
-                          B.name as client_name, B.email, B.address, B.contact_name, C.name as status_name
+        $q = \DB::select("SELECT A.invoice_id, A.due_date, DATE(A.created_at) as created_at, A.amount, A.paid, A.client_id,
+                          A.status_id, B.accounting_id, B.name as client_name, B.email, B.address, B.contact_name, B.phone
                           FROM ta_invoices as A
                           JOIN ta_sources as B ON A.client_id = B.source_id
-                          JOIN ta_status as C ON A.status_id = C.status_id
+                          WHERE A.hidden = '0' AND A.invoice_id = :invoice_id",
+            array(':invoice_id' => $invoice_id));
+        return $q;
+    }
+
+    /*----------------------------------
+    Get Invoice Services
+    ------------------------------------*/
+    public function getInvoiceServices($invoice_id)
+    {
+        $q = \DB::select("SELECT DISTINCT C.service_type_id, C.title as service_title
+                          FROM ta_invoices as A
+                          JOIN ta_invoice_items as B ON A.invoice_id = B.invoice_id
+                          JOIN ta_service_types as C ON B.service_type_id = C.service_type_id
                           WHERE A.hidden = '0' AND A.invoice_id = :invoice_id",
             array(':invoice_id' => $invoice_id));
         return $q;
@@ -210,9 +262,12 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoiceItems($invoice_id)
     {
-        $q = \DB::select("SELECT B.invoice_item_id, B.title, B.item_amount
-                          FROM ta_invoices as A , ta_invoice_items as B
-                          WHERE A.hidden = '0' AND A.invoice_id = B.invoice_id AND A.invoice_id = :invoice_id",
+        $q = \DB::select("SELECT B.invoice_item_id, B.description, B.amount as item_amount, C.service_type_id, C.title as service_title
+                          FROM ta_invoices as A
+                          JOIN ta_invoice_items as B ON A.invoice_id = B.invoice_id
+                          JOIN ta_service_types as C ON B.service_type_id = C.service_type_id
+                          WHERE A.hidden = '0' AND A.invoice_id = :invoice_id
+                          ORDER BY C.service_type_id",
             array(':invoice_id' => $invoice_id));
         return $q;
     }
@@ -227,6 +282,15 @@ class HomeRepository {
     }
 
     /*----------------------------------
+    Get Invoice Services
+    ------------------------------------*/
+    public function getServices()
+    {
+        $q = \DB::select("SELECT service_type_id, title FROM ta_service_types ORDER BY service_type_id");
+        return $q;
+    }
+
+    /*----------------------------------
     Add a new invoice
     ------------------------------------*/
     public function addInvoice($input, $amount)
@@ -234,10 +298,10 @@ class HomeRepository {
         \DB::transaction(function() use ($input, $amount) {
 
             \DB::table('ta_invoices')->insert([
-                'title' => $input['invoice_title'], 
                 'client_id' => $input['invoice_client'],
                 'amount' => $amount, 
                 'due_date' => $input['invoice_date'],
+                'next_payment' => $input['invoice_next_payment'],
                 'status_id' => '6',
                 'paid' => '0',
                 'hidden' => '0',
@@ -253,7 +317,6 @@ class HomeRepository {
                 'invoice_id' => $i[0]->invoice_id,
                 'source_id' => $q[0]->source_id, 
                 'amount' => $amount,
-                'contact' => $q[0]->contact_name, 
                 'date' => $input['invoice_date'],
                 'type' => '1',
                 'hidden' => '0',
@@ -265,12 +328,13 @@ class HomeRepository {
     /*----------------------------------
     Add invoice items
     ------------------------------------*/
-    public function addInvoiceItems($lastInvoiceId, $invoice_item_title, $invoice_item_amount)
+    public function addInvoiceItems($lastInvoiceId, $invoice_item_service, $invoice_item_description, $invoice_item_amount)
     {
         \DB::table('ta_invoice_items')->insert([
+            'description' => $invoice_item_description, 
+            'service_type_id' => $invoice_item_service,
+            'amount' => $invoice_item_amount,
             'invoice_id' => $lastInvoiceId,
-            'title' => $invoice_item_title, 
-            'item_amount' => $invoice_item_amount, 
             'created_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -282,11 +346,10 @@ class HomeRepository {
     {
         \DB::table('ta_invoices')
             ->where('invoice_id', $input['invoice_id'])
-            ->update(['title' => $input['invoice_title'], 
-            'source_id' => $input['invoice_client'],
+            ->update(['client_id' => $input['invoice_client'],
             'amount' => $amount, 
             'due_date' => $input['invoice_date'],
-            'status' => $input['invoice_status'],
+            'status_id' => $input['invoice_status'],
             'paid' => $input['invoice_paid'],
             'updated_at' => date('Y-m-d H:i:s')]);
     }
@@ -294,12 +357,24 @@ class HomeRepository {
     /*----------------------------------
     Update invoice items
     ------------------------------------*/
-    public function updateInvoiceItems($id, $invoice_item_title, $invoice_item_amount)
-    {
+    public function updateInvoiceItems($id, $invoice_description, $invoice_item_amount)
+    {   
         \DB::table('ta_invoice_items')
             ->where('invoice_item_id', $id)
-            ->update(['title' => $invoice_item_title, 
-            'item_amount' => $invoice_item_amount, 
+            ->update(['description' =>$invoice_description, 
+            'amount' => $invoice_item_amount, 
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+    }
+
+    /*----------------------------------
+    Update invoice items
+    ------------------------------------*/
+    public function updateInvoiceStatusToSent($invoice_id)
+    {
+        \DB::table('ta_invoices')
+            ->where('invoice_id', $invoice_id)
+            ->update(['status_id' =>'1',
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -325,7 +400,7 @@ class HomeRepository {
     ------------------------------------*/
     public function getTransactions()
     {
-        $q = \DB::select("SELECT A.*, B.name as source_name
+        $q = \DB::select("SELECT A.*, B.name as source_name, B.contact_name
                           FROM ta_transactions as A 
                           JOIN ta_sources as B ON A.source_id = B.source_id
                           WHERE A.hidden = '0' 
@@ -338,7 +413,10 @@ class HomeRepository {
     ------------------------------------*/
     public function getTransaction($transaction_id)
     {
-        $q = \DB::select("SELECT * FROM ta_transactions WHERE transaction_id = :transaction_id",
+        $q = \DB::select("SELECT A.*, B.name as source_name, B.contact_name
+                          FROM ta_transactions as A
+                          JOIN ta_sources as B ON A.source_id = B.source_id
+                          WHERE transaction_id = :transaction_id",
             array(':transaction_id' => $transaction_id));
         return $q;
     }
