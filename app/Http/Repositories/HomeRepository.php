@@ -371,13 +371,13 @@ class HomeRepository {
     Update all invoice information for a specific invoice
     ------------------------------------*/
     public function updateInvoice($input, $amount)
-    {
+    { 
         \DB::transaction(function() use ($input, $amount) {
+
             //Update the invoice data
             \DB::table('ta_invoices')
                 ->where('invoice_id', $input['invoice_id'])
-                ->update(['client_id' => $input['invoice_client'],
-                'amount' => $amount, 
+                ->update(['amount' => $amount, 
                 'due_date' => $input['invoice_date'],
                 'status_id' => $input['invoice_status'],
                 'paid' => $input['invoice_paid'],

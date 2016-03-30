@@ -361,7 +361,6 @@ class HomeController extends Controller
 
         //if the submit button of the edit invoice page is clicked, validate the input and update them in the database
         $this->validate($request, ['invoice_id' => 'required', 
-                                    'invoice_client' => 'required',
                                     'invoice_date' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
