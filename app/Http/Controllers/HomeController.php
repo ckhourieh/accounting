@@ -365,6 +365,7 @@ class HomeController extends Controller
                                     'invoice_date' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
+        dd('test');
         //Update the invoice with the final amount calculated above
         $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully updated!');
