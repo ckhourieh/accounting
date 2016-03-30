@@ -386,8 +386,11 @@ class HomeRepository {
             // If the status of the invoice is paid or incomplete we need to insert a new transaction.
             if($input['invoice_status'] == 3 OR $input['invoice_status'] == 2)
             {
-                $q = \DB::select("SELECT source_id, contact_name FROM ta_sources WHERE source_id = :source_id",
-                array(':source_id' => $input['invoice_client']));
+                $q = \DB::select("SELECT A.source_id, A.contact_name 
+                                  FROM ta_sources as A 
+                                  JOIN ta_invoices as B ON A.source_id = B.client_id 
+                                  WHERE B.invoice_id = :invoice_id",
+                array(':invoice_id' => $input['invoice_id']));
 
                 \DB::table('ta_transactions')->insert([
                     'invoice_id' => $input['invoice_id'],
