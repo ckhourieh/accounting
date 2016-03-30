@@ -386,6 +386,7 @@ class HomeController extends Controller
 
     public function sendInvoice(Request $request, $invoice_id)
     {
+        
         //gets all invoices and their information 
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
         $invoiceItems = $this->homeRepository->getInvoiceItems($invoice_id);

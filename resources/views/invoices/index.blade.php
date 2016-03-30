@@ -64,11 +64,13 @@
                                 <td>
                                     <a href="{{ route('print_invoice_path', $i->invoice_id) }}" class="btnPrint"><i class="fa fa-print"></i></a>
                                     <a href="{{ route('download_invoice_path', $i->invoice_id) }}"><i class="fa fa-download"></i></a>
-                                    @if($i->status_id == '1' || $i->status_id == '4' || $i->status_id == '5' || $i->status_id == '6')
-                                        <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    @endif
-                                    <a href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
-                                    <a onclick="return confirm('Are you sure that you want to remove this invoice '{{$i->invoice_id}}' from the list?');" href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    @if($i->status_id == '6')
+                                        
+                                        <a href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
+                                        <a onclick="return confirm('Are you sure that you want to remove this invoice '{{$i->invoice_id}}' from the list?');" href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    @endif      
+                                    
                                 </td>
                             </tr>
                         @endforeach
