@@ -388,7 +388,7 @@ class HomeController extends Controller
 
         $client_email = $invoiceInfo[0]->email;
 
-        Mail::send('invoices.print-invoice', array('data' => $data), function($message) use($pdf, $client_email)
+        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email)
         {
             $message->from('info@webneoo.com', 'Webneoo');
             $message->to($client_email)->subject('Webneoo Invoice');
