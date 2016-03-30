@@ -292,8 +292,10 @@ class HomeController extends Controller
 
     public function storeInvoice(Request $request)
     {
+        //Initialization of amount of the invoice
         $amount = 0;
-        //dd($request->all());
+
+        //Parsing all the items of the invoice that we need to add
         for($i=1;$i<=($request->input('item_number'));$i++)
         {
             $amount = $amount + $request->input('invoice_item_amount_'.$i);
@@ -417,7 +419,7 @@ class HomeController extends Controller
         return $pdf->download('invoice.pdf');
     }
 
-    public function hideInvoice($invoice_id)
+    public function hideInvoice(Request $request, $invoice_id)
     {
         $this->homeRepository->hideInvoice($invoice_id);
 

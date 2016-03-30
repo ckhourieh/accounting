@@ -158,8 +158,6 @@ class HomeRepository {
         ]);
     }
 
-
-
     /* **************************
                INVOICES
      ************************** */
@@ -170,7 +168,6 @@ class HomeRepository {
     public function getInvoices()
     {
         \DB::transaction(function() {
-
             //Select all invoices where due date is passed and status is not paid
             $invoices = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() 
                               AND ( (status_id = 1) OR (status_id = 2) OR (status_id = 5) )");
@@ -186,10 +183,9 @@ class HomeRepository {
         });
 
         \DB::transaction(function() {
-
             //Select all invoices where next payment date is passed
-            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE next_payment <= CURDATE() AND next_payment IS NOT NULL");
-
+            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE next_payment <= CURDATE()");
+           
             foreach ($invoices as $i) {
                 \DB::table('ta_invoices')->insert([
                     'client_id' => $i->client_id,
@@ -206,8 +202,6 @@ class HomeRepository {
                 ->update(['next_payment' => NULL,
                 'updated_at' => date('Y-m-d H:i:s')]);
             }
-
-
         });
 
         $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, A.next_payment, DATE(A.created_at) as created_at, A.status_id, C.name as status, 
@@ -216,7 +210,6 @@ class HomeRepository {
                             JOIN ta_sources as B ON A.client_id = B.source_id 
                             JOIN ta_status as C ON A.status_id = C.status_id
                             WHERE A.hidden = '0'");
-
 
         return $q;
     }
@@ -338,6 +331,9 @@ class HomeRepository {
     ------------------------------------*/
     public function addInvoice($input, $amount)
     {
+        if ($input['invoice_next_payment'] == "")
+            $input['invoice_next_payment'] = NULL;
+
         \DB::transaction(function() use ($input, $amount) {
 
             \DB::table('ta_invoices')->insert([
@@ -440,7 +436,7 @@ class HomeRepository {
     public function hideInvoice($invoice_id)
     {
         \DB::table('ta_invoices')
-            ->where('id', $invoice_id)
+            ->where('invoice_id', $invoice_id)
             ->update(['hidden' => '1',
             'updated_at' => date('Y-m-d H:i:s')]);
     }

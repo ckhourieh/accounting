@@ -77,7 +77,7 @@
                                 </div>
                             </div>
 
-                            <div class="item_number"></div>
+                            <div class="item_number"><input type="hidden" class="form-control" name="item_number" value="1"></div>
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary btn-lg">Add Invoice</button>
