@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>
                         @foreach($invoicesList as $i)             
-                            <tr <?php if(($i->due_date < date("Y-m-d")) && (($i->status_id == '5') || ($i->status_id == '4') || ($i->status_id == '2'))) echo 'class="danger"';?>>
+                            <tr <?php if(($i->due_date < date("Y-m-d")) && ($i->status_id == '4')) echo 'class="danger"';?>>
                                 <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
                                 <td>{{ $i->due_date }}</td>
                                 <td>{{ $i->created_at }}</td>

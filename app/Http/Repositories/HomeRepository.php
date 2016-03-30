@@ -169,12 +169,26 @@ class HomeRepository {
     ------------------------------------*/
     public function getInvoices()
     {
+        \DB::transaction(function() {
+
+            $p = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() 
+                              AND ( (status_id = 1) OR (status_id = 2) OR (status_id = 5) )");
+            
+            for($i=0; $i<COUNT($p); $i++)
+            {
+                \DB::table('ta_invoices')
+                ->where('invoice_id', $p[$i]->invoice_id)
+                ->update(['status_id' => '4',
+                'updated_at' => date('Y-m-d H:i:s')]);
+            }
+        });
+
         $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, A.next_payment, DATE(A.created_at) as created_at, A.status_id, C.name as status, 
-                        A.paid, B.name, B.email
-                        FROM ta_invoices as A 
-                        JOIN ta_sources as B ON A.client_id = B.source_id 
-                        JOIN ta_status as C ON A.status_id = C.status_id
-                        WHERE A.hidden = '0'");
+                            A.paid, B.name, B.email
+                            FROM ta_invoices as A 
+                            JOIN ta_sources as B ON A.client_id = B.source_id 
+                            JOIN ta_status as C ON A.status_id = C.status_id
+                            WHERE A.hidden = '0'");
         return $q;
     }
 
