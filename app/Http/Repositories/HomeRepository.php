@@ -171,16 +171,43 @@ class HomeRepository {
     {
         \DB::transaction(function() {
 
-            $p = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() 
+            //Select all invoices where due date is passed and status is not paid
+            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() 
                               AND ( (status_id = 1) OR (status_id = 2) OR (status_id = 5) )");
             
-            for($i=0; $i<COUNT($p); $i++)
+            //Set the status of all these invoices to Overdue
+            foreach($invoices as $i)
             {
                 \DB::table('ta_invoices')
-                ->where('invoice_id', $p[$i]->invoice_id)
+                ->where('invoice_id', $i->invoice_id)
                 ->update(['status_id' => '4',
                 'updated_at' => date('Y-m-d H:i:s')]);
             }
+        });
+
+        \DB::transaction(function() {
+
+            //Select all invoices where next payment date is passed
+            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE next_payment <= CURDATE() AND next_payment IS NOT NULL");
+
+            foreach ($invoices as $i) {
+                \DB::table('ta_invoices')->insert([
+                    'client_id' => $i->client_id,
+                    'amount' => $i->amount, 
+                    'status_id' => '6',
+                    'paid' => '0',
+                    'hidden' => '0',
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+
+
+                \DB::table('ta_invoices')
+                ->where('invoice_id', $i->invoice_id)
+                ->update(['next_payment' => NULL,
+                'updated_at' => date('Y-m-d H:i:s')]);
+            }
+
+
         });
 
         $q = \DB::select("SELECT A.invoice_id, A.client_id, A.amount, A.due_date, A.next_payment, DATE(A.created_at) as created_at, A.status_id, C.name as status, 
@@ -189,6 +216,8 @@ class HomeRepository {
                             JOIN ta_sources as B ON A.client_id = B.source_id 
                             JOIN ta_status as C ON A.status_id = C.status_id
                             WHERE A.hidden = '0'");
+
+
         return $q;
     }
 
@@ -322,20 +351,7 @@ class HomeRepository {
                 'created_at' => date('Y-m-d H:i:s')
             ]);
 
-            $i = \DB::select("SELECT invoice_id FROM ta_invoices ORDER BY invoice_id DESC LIMIT 1");
-
-            $q = \DB::select("SELECT source_id, contact_name FROM ta_sources WHERE source_id = :source_id",
-                array(':source_id' => $input['invoice_client']));
-
-            \DB::table('ta_transactions')->insert([
-                'invoice_id' => $i[0]->invoice_id,
-                'source_id' => $q[0]->source_id, 
-                'amount' => $amount,
-                'date' => $input['invoice_date'],
-                'type' => '1',
-                'hidden' => '0',
-                'created_at' => date('Y-m-d H:i:s')
-            ]);
+            
         });
     }
 
@@ -353,20 +369,45 @@ class HomeRepository {
         ]);
     }
 
+
+
     /*----------------------------------
     Update all invoice information for a specific invoice
     ------------------------------------*/
     public function updateInvoice($input, $amount)
     {
-        \DB::table('ta_invoices')
-            ->where('invoice_id', $input['invoice_id'])
-            ->update(['client_id' => $input['invoice_client'],
-            'amount' => $amount, 
-            'due_date' => $input['invoice_date'],
-            'status_id' => $input['invoice_status'],
-            'paid' => $input['invoice_paid'],
-            'updated_at' => date('Y-m-d H:i:s')]);
+        \DB::transaction(function() use ($input, $amount) {
+            //Update the invoice data
+            \DB::table('ta_invoices')
+                ->where('invoice_id', $input['invoice_id'])
+                ->update(['client_id' => $input['invoice_client'],
+                'amount' => $amount, 
+                'due_date' => $input['invoice_date'],
+                'status_id' => $input['invoice_status'],
+                'paid' => $input['invoice_paid'],
+                'updated_at' => date('Y-m-d H:i:s')]);
+  
+            // If the status of the invoice is paid or incomplete we need to insert a new transaction.
+            if($input['invoice_status'] == 3 OR $input['invoice_status'] == 2)
+            {
+                $q = \DB::select("SELECT source_id, contact_name FROM ta_sources WHERE source_id = :source_id",
+                array(':source_id' => $input['invoice_client']));
+
+                \DB::table('ta_transactions')->insert([
+                    'invoice_id' => $input['invoice_id'],
+                    'source_id' => $q[0]->source_id, 
+                    'amount' => $amount,
+                    'date' => $input['invoice_date'],
+                    'type' => '1',
+                    'hidden' => '0',
+                    'created_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+            
+        });
     }
+
+
 
     /*----------------------------------
     Update invoice items

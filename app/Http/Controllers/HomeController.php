@@ -342,15 +342,18 @@ class HomeController extends Controller
 
     public function updateInvoice(Request $request)
     {   
-        //dd($request->all());
+        //Initialization of amount of the invoice
         $amount = 0;
+        //Parsing all the items of the invoice that we need to update
         for($i=1;$i<=($request->input('item_number')-1);$i++)
         {
             //if the submit button of the add invoice page is clicked, validate the input and insert them in the database
             $this->validate($request, ['invoice_item_id_'.$i => 'required',
                                         'invoice_item_description_'.$i => 'required', 
                                         'invoice_item_amount_'.$i => 'required']);
+            //Update all the items of the invoice
             $this->homeRepository->updateInvoiceItems($request->input('invoice_item_id_'.$i), $request->input('invoice_item_description_'.$i), $request->input('invoice_item_amount_'.$i));
+            //Store the total amount of the invoice
             $amount = $amount + $request->input('invoice_item_amount_'.$i);
         }
 
@@ -360,6 +363,7 @@ class HomeController extends Controller
                                     'invoice_date' => 'required',
                                     'invoice_status' => 'required',
                                     'invoice_paid' => 'required']);
+        //Update the invoice with the final amount calculated above
         $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
         $request->session()->flash('flash_message','Invoice Successfully updated!');
 
