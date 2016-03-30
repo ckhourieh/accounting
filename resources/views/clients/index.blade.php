@@ -50,7 +50,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if(isset($c->total_income))
+                                    @if($c->total_income)
                                     <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ number_format($c->total_income) }}.00</a>
                                     @endif
                                 </td>
