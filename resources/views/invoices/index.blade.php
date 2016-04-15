@@ -43,14 +43,14 @@
                                 <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
                                 <td>{{ $i->due_date }}</td>
                                 <td>{{ $i->created_at }}</td>
-                                <td>{{ $i->name }}</td>
+                                <td><a href="{{ route('view_client_details_path', $i->client_id) }}">{{ $i->name }}</a></td>
                                 <td>
                                     @if($i->next_payment != '0000-00-00')
                                     {{ $i->next_payment }}
                                     @endif
                                 </td>
                                 <td>$ {{ number_format($i->amount) }}.00</td>
-                                <td>{{ $i->status }}</td>
+                                <td style="color:{{$i->color_code}}"><b>{{ $i->status }}</b></td>
                                 <td style="color:#5cb85c">
                                     @if($i->paid)
                                         $ {{ number_format($i->paid) }}.00
@@ -64,11 +64,14 @@
                                 <td>
                                     <a href="{{ route('print_invoice_path', $i->invoice_id) }}" class="btnPrint"><i class="fa fa-print"></i></a>
                                     <a href="{{ route('download_invoice_path', $i->invoice_id) }}"><i class="fa fa-download"></i></a>
-                                    <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    @if($i->status_id == '6')
-                                        
-                                        <a href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
-                                        <a onclick="return confirm('Are you sure that you want to remove this invoice '{{$i->invoice_id}}' from the list?');" href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
+                                    <!-- if status is different from paid -->
+                                    @if($i->status_id != 3)
+                                        <a href="{{ route('edit_invoice_path', $i->invoice_id) }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    @endif
+
+                                    @if($i->status_id == '6')    
+                                        <a onclick="return confirm('Are you sure you want to send the invoice number {{$i->invoice_id}}?')" href="{{ route('send_invoice_path', $i->invoice_id) }}"><i class="fa fa-paper-plane-o"></i></a>
+                                        <a onclick="return confirm('Are you sure you want to remove this invoice number {{$i->invoice_id}} from the list?');" href="{{ route('hide_invoice_path', $i->invoice_id) }}"><i class="fa fa-trash-o"></i></a>
                                     @endif      
                                     
                                 </td>

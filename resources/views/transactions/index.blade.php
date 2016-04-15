@@ -27,9 +27,10 @@
                         <tr>
                             <th>#</th>
                             <th>Date</th>
-                            <th>Invoice ID</th>
+                            <th>Invoice id </th>
+                            <th>Invoice #</th>
                             <th>Client / Supplier</th>
-                            <th>Contact</th>
+                            <th>Description</th>
                             <th>Amount</th>
                             <th>Type</th>
                             <th>Actions</th>
@@ -40,20 +41,24 @@
                             <tr>
                                 <td><a href="{{ route('view_transaction_details_path', $t->transaction_id) }}">{{ $t->transaction_id }}</a></td>
                                 <td>{{ $t->date }} </td>
-                                <td>{{ $t->invoice_id }}</td>
-                                <td>{{ $t->source_name }}</td>
-                                <td>{{ $t->contact_name }}</td>
+                                <td><a href="{{ route('view_invoice_details_path', $t->invoice_id) }}">{{ $t->invoice_id }}</a></td>
+                                <td>{{ $t->invoice_number }}</td>
+                                <td>
+                                    @if( $t->type_id == 1 )
+                                    <a href="{{ route('view_client_details_path', $t->source_id) }}">{{ $t->source_name }}</a>
+                                    @elseif( $t->type_id == 2 )
+                                    <a href="{{ route('view_supplier_details_path', $t->source_id) }}">{{ $t->source_name }}</a>
+                                    @endif
+                                </td>
+                                <td>{{ $t->description }}</td>
                                 @if($t->type==0)
                                     <td style="color:#d9534f">$ {{ $t->amount }}.00</td>
-                                    <td style="color:#d9534f"><i class="fa fa-arrow-down"></i></td>
+                                    <td style="color:#d9534f"><i class="fa fa-arrow-up"></i> &nbsp&nbsp OUT </td>
                                 @elseif($t->type==1)
                                     <td style="color:#5cb85c">$ {{ $t->amount }}.00</td>
-                                    <td style="color:#5cb85c"><i class="fa fa-arrow-up"></i></td>
+                                    <td style="color:#5cb85c"><i class="fa fa-arrow-down"></i> &nbsp&nbsp IN </td>
                                 @endif
                                 <td>
-                                    @if($t->type==0)
-                                        <a href="{{ route('edit_transaction_path', $t->transaction_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    @endif
                                     <a onclick="return confirm('Are you sure that you want to remove this transaction '{{$t->transaction_id}}'?');" href="{{ route('hide_transaction_path', $t->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>

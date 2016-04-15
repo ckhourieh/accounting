@@ -22,7 +22,8 @@
                     <b>Webneoo</b> <br>
                     Jal El Dib Main Road <br>
                     Mallah Center - 2nd Floor <br>
-                    Beirut, Lebanon
+                    Beirut, Lebanon <br>
+                    Financial #: 2693372
                 </li>
             </ul>
 
@@ -33,14 +34,14 @@
                     <h6 style="color:#666">BILL TO</h6>
                     <b>{{ $data[0]->client_name }}</b><br>
                     {{ $data[0]->address }}<br>
-                    Financial #: {{ $data[0]->accounting_id }}<br>
-                    {{ $data[0]->phone }}
+                    {{ $data[0]->phone }} <br>
+                    Financial #: {{ $data[0]->accounting_id }}
                 </li>
                 <li style="float:right; width:50%; text-align:right; display:inline-block; line-height:28px">
                     <b>Invoice Number: </b>{{ $data[0]->invoice_id }}<br>
                     <b>Invoice Date: </b>{{ $data[0]->created_at }}<br>
                     <b>Payment Due: </b></b>{{ $data[0]->due_date }} <br>
-                    <b>Amount Due (USD): ${{ $data[0]->amount }}.00</b>
+                    <b>Amount Due (USD): ${{ number_format($data[0]->amount, 2, '.', ' ') }}</b>
                 </li>
             </ul>
 
@@ -58,11 +59,11 @@
                 <ul style="list-style-type:none; padding: 0 30px;">
                     <li style="padding:5px; float:left; width:80%; display:inline-block;">
                         <b>{{ $data[$i]->service_title }}</b><br>
-                        {{ $data[$i]->description }}
+                      {!! $data[$i]->description !!}            
                     </li>
                     
                     <li style="padding:5px; text-align:right; float:right; width:20%; display:inline-block;">
-                        ${{ $data[$i]->item_amount }}.00
+                        ${{ number_format($data[$i]->item_amount, 2, '.', ' ') }}
                     </li>
                 </ul>
             <?php } ?>
@@ -70,7 +71,7 @@
             <ul style="list-style-type:none; padding: 0 30px;">
                 <li style="padding:5px; float:left; width:50%; display:inline-block;"></li>
                 <li style="padding:5px; text-align:right; border-top:2px solid #eee; font-weight:bold; float:right; width:50%; display:inline-block;">
-                   Total: ${{ $data[0]->amount }}.00
+                   Total: ${{ number_format($data[0]->amount, 2, '.', ' ') }}
                 </li>
             </ul>
 

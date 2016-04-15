@@ -26,6 +26,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Logo</th>
                             <th>Name</th>
                             <th>Total Amount Spent</th>
                             <th>Timeline</th>
@@ -35,7 +36,14 @@
                     <tbody>
                         @foreach($suppliersList as $c)             
                             <tr>
-                                <td>{{ $c->source_id }}</td>
+                                <td style="vertical-align:middle;">{{ $c->source_id }}</td>
+                                <td>
+                                    @if($c->img == NULL) 
+                                        <img width="40px;" src="/images/supplier.png"/>
+                                    @else
+                                        <img width="40px;" src="/images/suppliers/{{$c->img}}"/>
+                                    @endif
+                                </td>
                                 <td><a href="{{ route('view_supplier_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
                                 <td>
                                     @if(isset($c->total_amount_spent))

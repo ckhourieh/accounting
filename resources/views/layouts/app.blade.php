@@ -17,7 +17,11 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
     <!-- Morris Chart Styles-->
     <link href="/js/morris/morris.min.css" rel="stylesheet"/>
+     <!-- The styles -->
+    <link rel="stylesheet" type="text/css" media="screen" href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/master/build/css/bootstrap-datetimepicker.min.css">
+    <link href="/css/switch-button.css" rel="stylesheet"/>
     
+
     <!-- jQuery Js -->
     <script src="/js/jquery-1.10.2.js"></script>
 </head>

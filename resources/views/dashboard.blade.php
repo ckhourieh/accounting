@@ -15,66 +15,17 @@
 
 <div class="row">
 
-    <div class="col-md-3">
-        <div class="panel panel-primary text-center no-boder bg-color-green green">
-            <div class="panel-left pull-left green">
-                <i class="fa fa-bar-chart-o fa-5x"></i>
-            </div>
-            <div class="panel-right pull-right">
-                <h3>{{ $socialMediaTotalDue[0]->total }}</h3>
-               <strong> Total Due Social Media </strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-primary text-center no-boder bg-color-blue blue">
-            <div class="panel-left pull-left blue">
-                <i class="fa fa-shopping-cart fa-5x"></i>
-            </div>
-            <div class="panel-right pull-right">
-                <h3>{{ $webDevelopmentTotalDue[0]->total }}</h3>
-                <strong> Total Due Web Development </strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-primary text-center no-boder bg-color-red red">
-            <div class="panel-left pull-left red">
-                <i class="fa fa fa-comments fa-5x"></i>
-            </div>
-            <div class="panel-right pull-right">
-                <h3>{{ $emailsHostingTotalDue[0]->total }}</h3>
-                <strong> Total Due Emails & Hosting </strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-primary text-center no-boder bg-color-brown brown">
-            <div class="panel-left pull-left brown">
-                <i class="fa fa-users fa-5x"></i>
-            </div>
-            <div class="panel-right pull-right">
-                <h3>{{ $socialMediaTotalDue[0]->total + $webDevelopmentTotalDue[0]->total + $emailsHostingTotalDue[0]->total }}</h3>
-                <strong> Total Due </strong>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-<div class="row">
-
     <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Statistics of the year
+                Statistics of the year {{ $actual_year }}
             </div>
             <div class="panel-body">
                 <div id="bar-chart-all"></div>
                 <div id="bar-chart-profit"></div>
                 <div id="bar-chart-expenses"></div>
                 <div id="bar-chart-income"></div>
+                <br/>
                 <div class="col-xs-12">
                     <div class="btn btn-success" id="income">Income</div>
                     <div class="btn btn-danger" id="expenses">Expenses</div>
@@ -92,105 +43,182 @@
 <script src="/js/morris/morris.min.js"></script>
 
 <script type="text/javascript">
+
+var tab_month=<?=json_encode($tab_month)?>;
+
+
+// ------------------ TOTAL INCOME ---------------
+
+var tab_income=<?=json_encode($tab_income)?>;
+
+// construct the data table of the income
+var income_data="[";
+for(var a = 1; a<=12; a++)
+{
+    income_data+= "{y:'"+tab_month[a]+"',a:"+tab_income[a]+"},";
+}
+
+//remove the last coma from s
+income_data=income_data.slice(0,-1); 
+
+income_data+="]";
+
+
+// ------------------ TOTAL EXPENSES ---------------
+
+var tab_expenses =<?=json_encode($tab_expenses)?>;
+
+// construct the data table of the expenses
+var expenses_data="[";
+for(var b = 1; b<=12; b++)
+{
+    expenses_data+= "{y:'"+tab_month[b]+"',a:"+tab_expenses[b]+"},";
+}
+
+//remove the last coma from s
+expenses_data=expenses_data.slice(0,-1); 
+
+expenses_data+="]";
+
+
+
+// ------------------ TOTAL PROFIT ---------------
+
+// construct the data table of the profit
+var profit_data="[";
+for(var c = 1; c<=12; c++)
+{
+    profit_data+= "{y:'"+tab_month[c]+"',a:"+(tab_income[c]-tab_expenses[c])+"},";
+}
+
+//remove the last coma from s
+profit_data=profit_data.slice(0,-1); 
+
+profit_data+="]";
+
+
+
+// ------------------ TOTAL FOR ALL  ---------------
+
+// construct the data table of the profit
+var all_data="[";
+for(var d = 1; d<=12; d++)
+{
+    all_data+= "{y:'"+tab_month[d]+"',a:"+tab_income[d]+",b:"+tab_expenses[d]+",c:"+(tab_income[d]-tab_expenses[d])+"},";
+}
+
+//remove the last coma from s
+all_data=all_data.slice(0,-1); 
+
+all_data+="]";
+
+
+
+
 (function ($) {
 
-    $('#bar-chart-profit').hide();
-    $('#bar-chart-expenses').hide();
-    $('#bar-chart-income').hide();
-
-    $('#profit').click(function(){
-        $('#bar-chart-all').hide();
-        $('#bar-chart-profit').show();
-        $('#bar-chart-expenses').hide();
-        $('#bar-chart-income').hide();
-    });
-
-    $('#expenses').click(function(){
-        $('#bar-chart-all').hide();
-        $('#bar-chart-profit').hide();
-        $('#bar-chart-income').hide();
-        $('#bar-chart-expenses').show();
-    });
+    $('#bar-chart-profit').empty();
+    $('#bar-chart-expenses').empty();
+    $('#bar-chart-income').empty();
 
     $('#income').click(function(){
-        $('#bar-chart-all').hide();
-        $('#bar-chart-profit').hide();
-        $('#bar-chart-expenses').hide();
+
+        $('#bar-chart-income').empty();
+        $('#bar-chart-all').empty();
+        $('#bar-chart-profit').empty();
+        $('#bar-chart-expenses').empty();
         $('#bar-chart-income').show();
+    
+    Morris.Bar({
+        element: 'bar-chart-income',
+        data: eval(income_data),
+        xkey: 'y',
+        ykeys: ['a'],
+        labels: ['Income'],
+        barColors: ['#5cb85c'],
+        hideHover: 'auto',
+        resize: true
     });
 
-    $('#all').click(function(){
-        $('#bar-chart-profit').hide();
-        $('#bar-chart-expenses').hide();
-        $('#bar-chart-income').hide();
-        $('#bar-chart-all').show();
+
     });
+
+
+    $('#expenses').click(function(){
+
+        $('#bar-chart-expenses').empty();
+        $('#bar-chart-all').empty();
+        $('#bar-chart-profit').empty();
+        $('#bar-chart-income').empty();
+        $('#bar-chart-expenses').show();
+
+        Morris.Bar({
+            element: 'bar-chart-expenses',
+            data: eval(expenses_data),
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Expenses'],
+            barColors: ['#d9534f'],
+            hideHover: 'auto',
+            resize: true
+        });
+    });
+
+
+     $('#profit').click(function(){
+
+        $('#bar-chart-profit').empty();
+        $('#bar-chart-all').empty();
+        $('#bar-chart-profit').show();
+        $('#bar-chart-expenses').empty();
+        $('#bar-chart-income').empty();
+
+        Morris.Bar({
+            element: 'bar-chart-profit',
+            data: eval(profit_data),
+            xkey: 'y',
+            ykeys: ['a'],
+            labels: ['Profit'],
+            barColors: ['#007cc2'],
+            hideHover: 'auto',
+            resize: true
+        });
+
+    });
+
+
+    $('#all').click(function(){
+        
+        $('#bar-chart-all').empty();
+        $('#bar-chart-profit').empty();
+        $('#bar-chart-expenses').empty();
+        $('#bar-chart-income').empty();
+        $('#bar-chart-all').show();
+
+
+        /* MORRIS BAR CHART
+        -----------------------------------------*/
+        Morris.Bar({
+            element: 'bar-chart-all',
+            data: eval(all_data),
+            xkey: 'y',
+            ykeys: ['a', 'b', 'c'],
+            labels: ['Income', 'Expenses', 'Profit'],
+            barColors: ['#5cb85c','#d9534f', '#007cc2', '#A8E9DC'],
+            hideHover: 'auto',
+            resize: true
+        });
+
+
+    });
+
+
 
     /* MORRIS BAR CHART
     -----------------------------------------*/
     Morris.Bar({
         element: 'bar-chart-all',
-        data: [{
-            y: 'JAN',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'FEB',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAR',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'APR',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAY',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'JUN',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'JUL',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'AUG',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'SEP',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'OCT',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'NOV',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'DEC',
-            a: 100,
-            b: 90,
-            c: 10
-        }],
+        data: eval(all_data),
         xkey: 'y',
         ykeys: ['a', 'b', 'c'],
         labels: ['Income', 'Expenses', 'Profit'],
@@ -199,220 +227,10 @@
         resize: true
     });
 
-    Morris.Bar({
-        element: 'bar-chart-profit',
-        data: [{
-            y: 'JAN',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'FEB',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAR',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'APR',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAY',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'JUN',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'JUL',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'AUG',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'SEP',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'OCT',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'NOV',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'DEC',
-            a: 100,
-            b: 90,
-            c: 10
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b', 'c'],
-        labels: ['Income', 'Expenses', 'Profit'],
-        barColors: ['#fff','#fff', '#007cc2', '#A8E9DC'],
-        hideHover: 'auto',
-        resize: true
-    });
 
-    Morris.Bar({
-        element: 'bar-chart-expenses',
-        data: [{
-            y: 'JAN',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'FEB',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAR',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'APR',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAY',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'JUN',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'JUL',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'AUG',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'SEP',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'OCT',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'NOV',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'DEC',
-            a: 100,
-            b: 90,
-            c: 10
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b', 'c'],
-        labels: ['Income', 'Expenses', 'Profit'],
-        barColors: ['#fff','#d9534f', '#fff', '#A8E9DC'],
-        hideHover: 'auto',
-        resize: true
-    });
-
-    Morris.Bar({
-        element: 'bar-chart-income',
-        data: [{
-            y: 'JAN',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'FEB',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAR',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'APR',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'MAY',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'JUN',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'JUL',
-            a: 100,
-            b: 90,
-            c: 10
-        }, {
-            y: 'AUG',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'SEP',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'OCT',
-            a: 50,
-            b: 40,
-            c: 10
-        }, {
-            y: 'NOV',
-            a: 75,
-            b: 65,
-            c: 10
-        }, {
-            y: 'DEC',
-            a: 100,
-            b: 90,
-            c: 10
-        }],
-        xkey: 'y',
-        ykeys: ['a', 'b', 'c'],
-        labels: ['Income', 'Expenses', 'Profit'],
-        barColors: ['#5cb85c','#fff', '#fff', '#A8E9DC'],
-        hideHover: 'auto',
-        resize: true
-    });
 
 
 }(jQuery));
+
 </script>
 @endsection
