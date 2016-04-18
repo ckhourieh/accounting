@@ -60,7 +60,7 @@
                                 </div>
 
                                 <div class="form-group col-lg-12">
-                                    <button type="submit" class="btn btn-success btn-lg">Preview Salary</button>
+                                    <button name="preview_salary" type="submit" class="btn btn-success btn-lg">Preview Salary</button>
                                     <a href="{{ route('profile_details_path', $user_info[0]->id) }}" class="btn btn-primary btn-lg">Back to {{ $user_info[0]->firstname}} {{ $user_info[0]->lastname}} profile</a>
                                 </div>
 
@@ -73,6 +73,100 @@
   
             </div>
             <!-- /.panel-body -->
+
+            @if(isset($total_amount))
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel panel-info">
+                                
+                                <div class="panel-heading">
+                                  <h3 class="panel-title" style="position:relative; top:-6px; font-weight:bold;">{{ $user_info[0]->firstname}} {{ $user_info[0]->lastname }} - Salary for the month of {{date("F  Y", strtotime($month)) }} </h3>
+                                </div>
+                                <div class="panel-body">
+                                  <div class="row">
+                                    <div class="col-md-3 col-lg-3 " align="center"> 
+                                        @if($user_info[0]->img == NULL)
+                                        <img alt="User Pic" src="images/client.jpg" class="img-circle img-responsive"> 
+                                        @else
+                                        <img alt="User Pic" src="images/team/{{$user_info[0]->img}}" class="img-circle img-responsive"> 
+                                        @endif
+                                    </div>
+                                    
+                                    <div class=" col-md-9 col-lg-9 "> 
+                                      <table class="table table-user-information">
+                                        <tbody>
+                                          <tr>
+                                            <td>Name:</td>
+                                            <td><b>{{ $user_info[0]->firstname}} {{ $user_info[0]->lastname }}</b></td>
+                                          </tr>
+
+                                          <tr>
+                                            <td>Base salary:</td>
+                                            <td style="color:#5cb85c"><b>${{ $base_salary_amount }}</b></td>
+                                          </tr>
+
+                                          <tr>
+                                            <td>Transportation:</td>
+                                            <td style="color:#5cb85c"><b>${{ $transport_amount }}</b></td>
+                                          </tr>
+
+
+                                          <tr>
+                                            <td>Days off:</td>
+                                            <td style="color:#d43f3a"><b>${{ $days_off_amount }}</b></td>
+                                          </tr>
+
+                                          <tr>
+                                            <td>Bonus:</td>
+                                            <td style="color:#5cb85c"><b>${{ $bonus_amount }}</b></td>
+                                          </tr>
+
+                                           <tr>
+                                            <td><h2>Total amount</h2></td>
+                                            <td><h2 style="color:#4cae4c">{{ number_format($total_amount,2,"."," ") }} USD</h2></td>
+                                          </tr>
+
+                                        </tbody>
+                                      </table>
+
+                                       {!! Form::open(array('route' => array('add_salary_path', $user_info[0]->id))) !!}
+
+                                           <input type="hidden" name="transport_amount" value="{{ $transport_amount }}">
+                                           <input type="hidden" name="days_off_amount" value="{{ $days_off_amount }}">
+                                           <input type="hidden" name="bonus_amount" value="{{ $bonus_amount }}">
+                                           <input type="hidden" name="base_salary_amount" value="{{ $base_salary_amount }}">
+                                           <input type="hidden" name="total_amount" value="{{ $total_amount }}">
+
+                                           <?php 
+
+                                                $description = $user_info[0]->firstname."'s salary for the month of ".date('F  Y', strtotime($month)); 
+                                           ?>
+
+                                           <input type="hidden" name="description" value="{{ $description }}">
+                                           <input type="hidden" name="transport_date" value="{{ $month }}">
+                                            
+                                            <div class="form-group col-lg-12">
+                                                <button type="submit" class="btn btn-success btn-lg">Store Salary</button>
+                                            </div>
+
+                                       {!! Form::close() !!}
+
+                                    </div>
+                                  </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.row (nested) -->
+
+            @endif
+
+
+
         </div>
         <!-- /.panel -->
     </div>
@@ -90,8 +184,9 @@
      $(function () {
          $('#datetimepicker1').datetimepicker({
              pickTime: false,
-             format: 'MM-DD',
-             viewMode: "months"
+             format: 'YYYY-MM',
+             viewMode: "months",
+             defaultDate: new Date()
          });
      });
  </script>

@@ -65,7 +65,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-lg-6">
+                                <div class="form-group col-lg-12">
                                     <button type="submit" class="btn btn-success btn-lg">Add transportation</button>
                                     <a href="{{ route('profile_details_path', $user_info[0]->id) }}" class="btn btn-primary btn-lg">Back to {{ $user_info[0]->firstname}} {{ $user_info[0]->lastname}} profile</a>
 

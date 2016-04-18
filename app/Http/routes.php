@@ -317,11 +317,19 @@ Route::group(['middleware' => 'web'], function () {
 
 
     //view and add transportation
-    Route::get('/preview-salary-{user_id}', [
+    Route::post('/preview-salary-{user_id}', [
         'as' => 'preview_salary_path',
         'uses' => 'HomeController@previewSalary'
     ]);
 
+
+    //store the salaries in the transaction
+    Route::post('/add-salary-{user_id}', [
+        'as' => 'add_salary_path',
+        'uses' => 'HomeController@storeSalary'
+    ]);
+
+    
 
 
     

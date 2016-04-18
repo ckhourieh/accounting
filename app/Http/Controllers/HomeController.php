@@ -724,17 +724,64 @@ class HomeController extends Controller
 
 
     public function previewSalary(Request $request, $user_id)
-    {
+    {   
+
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+       // get the total transportation for the selected month for a specific user
+        $transport_amount = $this->homeRepository->calculateMonthlyTranportation($user_id, $request->transport_date);
+        if($transport_amount != NULL)
+        $transport_amount = (float)$transport_amount[0]->transport_amount;
+        else
+        $transport_amount = 0;
+
        
-       // // get the info of a specific user
-       //  $user_info = $this->homeRepository->getUserInfo($user_id);
 
-       //  // get the transportation of a specific user
-       //  $transportation_info = $this->homeRepository->getTransportation($user_id);
+        // calculating the amount to reduce from the days off
+        if(isset($request->days_off) || $request->days_off != 0)
+        $days_off_amount = ($user_info[0]->base_salary / 20.0)* $request->days_off;
+        else
+        $days_off_amount = 0;
+
+        $bonus_amount = (float)$request->bonus;
+        $base_salary_amount = (float)$user_info[0]->base_salary;
+
+        $total_amount = ($base_salary_amount + $transport_amount - $days_off_amount + $bonus_amount);
 
 
-       //  $transportation_cost = 
+        return view('team.salary', array('user_info' => $user_info, 'base_salary_amount' => $base_salary_amount, 'transport_amount' => $transport_amount, 
+                                         'days_off_amount' => $days_off_amount, 'bonus_amount' => $bonus_amount, 'total_amount' => $total_amount, 'month' => $request->transport_date));
+        
+    }
 
+
+
+    public function storeSalary(Request $request, $user_id)
+    {   
+
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+        $base_salary_amount = (float)$request->base_salary_amount;
+        $transport_amount = (float)$request->transport_amount;
+        $days_off_amount = (float)$request->days_off_amount;
+        $bonus_amount = (float)$request->bonus_amount;
+        $total_amount = (float)$request->total_amount;
+        $description = $request->description;
+        $salary_date = $request->transport_date;
+
+        //store the salary as a transaction
+        $this->homeRepository->addSalary($base_salary_amount, $transport_amount, $days_off_amount, 
+                                         $bonus_amount, $total_amount, $description, $salary_date, $user_id);
+                                                      
+        // get the list of all the transactions
+        $transactionsList = $this->homeRepository->getTransactions();
+        $request->session()->flash('flash_message','Salary Successfully added!');
+
+
+        return view('transactions.index', array('transactionsList' => $transactionsList));
+        
     }
 
     

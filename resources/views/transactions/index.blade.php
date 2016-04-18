@@ -48,6 +48,8 @@
                                     <a href="{{ route('view_client_details_path', $t->source_id) }}">{{ $t->source_name }}</a>
                                     @elseif( $t->type_id == 2 )
                                     <a href="{{ route('view_supplier_details_path', $t->source_id) }}">{{ $t->source_name }}</a>
+                                    @elseif( $t->type_id == 3 )
+                                    {{ $t->source_name }}
                                     @endif
                                 </td>
                                 <td>{{ $t->description }}</td>
