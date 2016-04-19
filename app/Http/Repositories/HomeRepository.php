@@ -169,8 +169,7 @@ class HomeRepository {
     {
         \DB::transaction(function() {
             //Select all invoices where due date is passed and status is not paid
-            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() 
-                              AND ( (status_id = 1) OR (status_id = 2) OR (status_id = 5) )");
+            $invoices = \DB::select("SELECT * FROM ta_invoices WHERE due_date < CURDATE() AND status_id = 1");
             
             //Set the status of all these invoices to Overdue
             foreach($invoices as $i)
@@ -185,7 +184,7 @@ class HomeRepository {
         \DB::transaction(function() {
             //Select all invoices where next payment date is passed
             $invoices = \DB::select("SELECT * FROM ta_invoices WHERE next_payment <= CURDATE()");
-           
+
             foreach ($invoices as $i) {
                 \DB::table('ta_invoices')->insert([
                     'client_id' => $i->client_id,
@@ -382,7 +381,8 @@ class HomeRepository {
                 'status_id' => $input['invoice_status'],
                 'paid' => $input['invoice_paid'],
                 'updated_at' => date('Y-m-d H:i:s')]);
-  
+
+
             // If the status of the invoice is paid or incomplete we need to insert a new transaction.
             if($input['invoice_status'] == 3 OR $input['invoice_status'] == 2)
             {
@@ -401,7 +401,7 @@ class HomeRepository {
                     'hidden' => '0',
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-            }
+            }            
             
         });
     }
