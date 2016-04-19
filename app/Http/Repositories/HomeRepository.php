@@ -462,9 +462,21 @@ class HomeRepository {
      ************************** */
 
     /*----------------------------------
-    Get all transactions and their information
+    Get only accountant transactions and their information
     ------------------------------------*/
     public function getTransactions()
+    {
+        $q = \DB::select("SELECT A.*, B.name as source_name, B.type_id, B.source_id
+                          FROM ta_transactions as A 
+                          JOIN ta_sources as B ON A.source_id = B.source_id
+                          WHERE A.hidden = '0' 
+                          AND salary_id IS NULL
+                          ORDER BY A.transaction_id ASC");
+        return $q;
+    }
+
+
+    public function getAllTransactions()
     {
         $q = \DB::select("SELECT A.*, B.name as source_name, B.type_id, B.source_id
                           FROM ta_transactions as A 
@@ -474,6 +486,7 @@ class HomeRepository {
         return $q;
     }
 
+ 
     /*----------------------------------
     Get a specific transaction's information
     ------------------------------------*/

@@ -93,4 +93,9 @@
 }
 
 
+.body_login
+{
+    background-image:url('../images/background.jpg');
+    background-size: cover;
+}
 

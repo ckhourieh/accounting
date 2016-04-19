@@ -581,8 +581,15 @@ class HomeController extends Controller
 
     public function transactions()
     {
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
         return view('transactions.index', array('transactionsList' => $transactionsList));
     }
 
@@ -614,8 +621,15 @@ class HomeController extends Controller
 
         $request->session()->flash('flash_message','Transaction Successfully added!');
 
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
 
         return view('transactions.index', array('transactionsList' => $transactionsList));
     }
@@ -632,8 +646,15 @@ class HomeController extends Controller
     {
         $this->homeRepository->hideTransaction($transaction_id);
 
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
         $request->session()->flash('flash_message','Transaction Successfully removed!');
 
         return view('transactions.index', array('transactionsList' => $transactionsList));
@@ -775,10 +796,18 @@ class HomeController extends Controller
         $this->homeRepository->addSalary($base_salary_amount, $transport_amount, $days_off_amount, 
                                          $bonus_amount, $total_amount, $description, $salary_date, $user_id);
                                                       
-        // get the list of all the transactions
-        $transactionsList = $this->homeRepository->getTransactions();
-        $request->session()->flash('flash_message','Salary Successfully added!');
+       
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
 
+
+          $request->session()->flash('flash_message','Salary Successfully added!');
 
         return view('transactions.index', array('transactionsList' => $transactionsList));
         

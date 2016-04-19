@@ -39,7 +39,11 @@
                     <tbody>
                         @foreach($transactionsList as $t)             
                             <tr>
-                                <td><a href="{{ route('view_transaction_details_path', $t->transaction_id) }}">{{ $t->transaction_id }}</a></td>
+                                @if( $t->salary_id == NULL )
+                                 <td><a href="{{ route('view_transaction_details_path', $t->transaction_id) }}">{{ $t->transaction_id }}</a></td>
+                                @else
+                                 <td>{{ $t->transaction_id }}</td>
+                                @endif
                                 <td>{{ $t->date }} </td>
                                 <td><a href="{{ route('view_invoice_details_path', $t->invoice_id) }}">{{ $t->invoice_id }}</a></td>
                                 <td>{{ $t->invoice_number }}</td>

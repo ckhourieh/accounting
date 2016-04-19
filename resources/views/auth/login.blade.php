@@ -10,6 +10,7 @@
     <!-- Fonts -->
     <link href="/css/font-awesome.css" rel="stylesheet" />
 
+    <link href="/css/switch-button.css" rel="stylesheet" />
     <!-- Styles -->
     <link href="/css/bootstrap.css" rel="stylesheet" />
 
@@ -27,15 +28,14 @@
 
 </head>
 
-<body id="app-layout">
+<body id="app-layout" class="body_login">
     <div class="container">
-        <div class="row" style="margin-bottom:50px">
-            <center><h1>Webneoo Accounting System</h1></center>
-        </div>
+        <br/><br/>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Login</div>
+
+                    <div class="panel-heading"><b>WEBNEOO ACCOUNTING SYSTEM</b></div>
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                             {!! csrf_field() !!}

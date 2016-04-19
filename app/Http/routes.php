@@ -31,11 +31,7 @@ Route::get('/', [
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    //Dashboard
-    Route::get('/dashboard', [
-        'as' => 'dashboard_path',
-        'uses' => 'HomeController@dashboard'
-    ]);
+   
 
     //Clients
     Route::get('/clients', [
@@ -279,56 +275,72 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
+      Route::group(['middleware' => 'admin'], function () {
 
-    //view profile for salaries
-    Route::get('/team', [
-        'as' => 'team_path',
-        'uses' => 'HomeController@team'
-    ]);
-
-    //view profile details for salary
-    Route::get('/profile-details-{user_id}', [
-        'as' => 'profile_details_path',
-        'uses' => 'HomeController@profileDetails'
-    ]);
+            //Dashboard
+            Route::get('/dashboard', [
+                'as' => 'dashboard_path',
+                'uses' => 'HomeController@dashboard'
+            ]);
 
 
+          //view profile for salaries
+            Route::get('/team', [
+                'as' => 'team_path',
+                'uses' => 'HomeController@team'
+            ]);
+
+            //view profile details for salary
+            Route::get('/profile-details-{user_id}', [
+                'as' => 'profile_details_path',
+                'uses' => 'HomeController@profileDetails'
+            ]);
 
 
-    //view and add transportation
-    Route::get('/transportation-{user_id}', [
-        'as' => 'transportation_path',
-        'uses' => 'HomeController@transportation'
-    ]);
 
 
-    //store a transportation 
-    Route::post('/add-transportation-{user_id}', [
-        'as' => 'add_transportation_path',
-        'uses' => 'HomeController@storeTransportation'
-    ]);
+            //view and add transportation
+            Route::get('/transportation-{user_id}', [
+                'as' => 'transportation_path',
+                'uses' => 'HomeController@transportation'
+            ]);
 
 
-    //view and add transportation
-    Route::get('/salary-{user_id}', [
-        'as' => 'salary_path',
-        'uses' => 'HomeController@salary'
-    ]);
+            //store a transportation 
+            Route::post('/add-transportation-{user_id}', [
+                'as' => 'add_transportation_path',
+                'uses' => 'HomeController@storeTransportation'
+            ]);
 
 
-    //view and add transportation
-    Route::post('/preview-salary-{user_id}', [
-        'as' => 'preview_salary_path',
-        'uses' => 'HomeController@previewSalary'
-    ]);
+            //view and add transportation
+            Route::get('/salary-{user_id}', [
+                'as' => 'salary_path',
+                'uses' => 'HomeController@salary'
+            ]);
 
 
-    //store the salaries in the transaction
-    Route::post('/add-salary-{user_id}', [
-        'as' => 'add_salary_path',
-        'uses' => 'HomeController@storeSalary'
-    ]);
+            //prieview salaries
+            Route::post('/preview-salary-{user_id}', [
+                'as' => 'preview_salary_path',
+                'uses' => 'HomeController@previewSalary'
+            ]);
 
+
+            //store the salaries in the transaction
+            Route::post('/add-salary-{user_id}', [
+                'as' => 'add_salary_path',
+                'uses' => 'HomeController@storeSalary'
+            ]);
+
+
+
+
+    });
+
+
+
+  
     
 
 
