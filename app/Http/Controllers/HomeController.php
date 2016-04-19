@@ -8,6 +8,8 @@ use App\Http\Repositories\HomeRepository;
 use Session;
 use Mail;
 use PDF;
+use Carbon\Carbon;
+
 
 class HomeController extends Controller
 {
@@ -38,11 +40,70 @@ class HomeController extends Controller
     }
 
     public function dashboard()
-    {
-        $socialMediaTotalDue = $this->homeRepository->getServiceDueInvoices(1);
-        $webDevelopmentTotalDue = $this->homeRepository->getServiceDueInvoices(2);
-        $emailsHostingTotalDue = $this->homeRepository->getServiceDueInvoices(3);
-        return view('dashboard', array('socialMediaTotalDue' => $socialMediaTotalDue, 'webDevelopmentTotalDue' => $webDevelopmentTotalDue, 'emailsHostingTotalDue' => $emailsHostingTotalDue));
+    {    
+        // get the actual year 
+        $actual_date = Carbon::now('Asia/Beirut');
+        $actual_year = date('Y', strtotime($actual_date));
+
+
+        $tab_month[1] = 'JAN';
+        $tab_month[2] = 'FEB';
+        $tab_month[3] = 'MAR';
+        $tab_month[4] = 'APR';
+        $tab_month[5] = 'MAY';
+        $tab_month[6] = 'JUN';
+        $tab_month[7] = 'JUL';
+        $tab_month[8] = 'AUG';
+        $tab_month[9] = 'SEP';
+        $tab_month[10] = 'OCT';
+        $tab_month[11] = 'NOV';
+        $tab_month[12] = 'DEC';
+
+
+
+        // ------------------ TOTAL INCOME ---------------
+
+        $tab_income =  array();
+
+        //declare all the income of the month to 0
+        for($i=1; $i<=12; $i++)
+        {
+            $tab_income[$i] = 0;
+        }
+
+        // calculate the total income of every month
+         $income = $this->homeRepository->getIncomes();
+
+        // affect the amount of every month to the specific index
+        foreach($income as $in)
+        {
+            $tab_income[$in->this_month] = $in->total_income;
+        }
+
+
+
+        // ------------------ TOTAL EXPENSES ---------------
+
+         $tab_expenses =  array();
+
+        //declare all the expenses of the month to 0
+        for($j=1; $j<=12; $j++)
+        {
+            $tab_expenses[$j] = 0;
+        }
+
+        // calculate the total expenses of every month
+         $expenses = $this->homeRepository->getExpenses();
+
+        // affect the amount of every month to the specific index
+        foreach($expenses as $e)
+        {
+            $tab_expenses[$e->this_month] = $e->total_expenses;
+        }
+
+
+      
+        return view('dashboard', array('actual_year' => $actual_year, 'tab_month' => $tab_month, 'tab_income' => $tab_income, 'tab_expenses' => $tab_expenses));
     }
 
 
@@ -98,7 +159,7 @@ class HomeController extends Controller
     }
 
     public function addClient()
-    {
+    {  
         return view('clients.add-client');
     }
 
@@ -113,7 +174,17 @@ class HomeController extends Controller
                                     'client_owner' => 'required',
                                     'client_contact' => 'required',
                                     'client_accounting' => 'required']);
-        $this->homeRepository->addClient($request->only('client_name', 'client_desc', 'client_email', 'client_phone', 'client_address', 'client_owner', 'client_contact', 'client_accounting'));
+
+        if ($request->hasFile('client_img')) 
+        {  
+            $file = $request->file('client_img');
+            $file_name = time() . '-' . $file->getClientOriginalName(); 
+            $file->move('images/clients/', $file_name);
+            $request->filename = $file_name;
+        }
+
+
+        $this->homeRepository->addClient($request->only('client_name', 'client_desc', 'client_email', 'client_phone', 'client_address', 'client_owner', 'client_contact', 'client_accounting'), $request->filename);
         $request->session()->flash('flash_message','Client Successfully added!');
 
         //gets all clients and their information 
@@ -138,9 +209,17 @@ class HomeController extends Controller
                                     'source_phone' => 'required',
                                     'source_address' => 'required',
                                     'source_owner' => 'required',
-                                    'source_contact' => 'required',
-                                    'source_accounting' => 'required']);
-        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'));
+                                    'source_contact' => 'required']);
+
+        if ($request->hasFile('client_img')) 
+        {  
+            $file = $request->file('client_img');
+            $file_name = time() . '-' . $file->getClientOriginalName(); 
+            $file->move('images/clients/', $file_name);
+            $request->filename = $file_name;
+        }
+
+        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'), $request->filename);
         $request->session()->flash('flash_message','Client Successfully updated!');
 
         //gets all clients and their information 
@@ -209,9 +288,18 @@ class HomeController extends Controller
                                     'supplier_phone' => 'required',
                                     'supplier_address' => 'required',
                                     'supplier_owner' => 'required',
-                                    'supplier_contact' => 'required',
-                                    'supplier_accounting' => 'required']);
-        $this->homeRepository->addSupplier($request->only('supplier_name', 'supplier_desc', 'supplier_email', 'supplier_phone', 'supplier_address', 'supplier_owner', 'supplier_contact', 'supplier_accounting'));
+                                    'supplier_contact' => 'required']);
+       
+        if ($request->hasFile('supplier_img')) 
+        {  
+            $file = $request->file('supplier_img');
+            $file_name = time() . '-' . $file->getClientOriginalName(); 
+            $file->move('images/suppliers/', $file_name);
+            $request->filename = $file_name;
+        }
+
+
+        $this->homeRepository->addSupplier($request->only('supplier_name', 'supplier_desc', 'supplier_email', 'supplier_phone', 'supplier_address', 'supplier_owner', 'supplier_contact', 'supplier_accounting'), $request->filename);
         $request->session()->flash('flash_message','Supplier Successfully added!');
 
         //gets all suppliers and their information 
@@ -236,9 +324,17 @@ class HomeController extends Controller
                                     'source_phone' => 'required',
                                     'source_address' => 'required',
                                     'source_owner' => 'required',
-                                    'source_contact' => 'required',
-                                    'source_accounting' => 'required']);
-        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'));
+                                    'source_contact' => 'required']);
+
+        if ($request->hasFile('supplier_img')) 
+        {  
+            $file = $request->file('supplier_img');
+            $file_name = time() . '-' . $file->getClientOriginalName(); 
+            $file->move('images/suppliers/', $file_name);
+            $request->filename = $file_name;
+        }
+
+        $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'), $request->filename);
         $request->session()->flash('flash_message','Supplier Successfully updated!');
 
         //gets all suppliers and their information 
@@ -326,7 +422,7 @@ class HomeController extends Controller
     }
 
     public function editInvoice($invoice_id)
-    {
+    {   
         //gets all clients 
         $clients = $this->homeRepository->getClientNames();
 
@@ -339,11 +435,16 @@ class HomeController extends Controller
         //gets all information of a specific invoice
         $invoiceInfo = $this->homeRepository->getInvoice($invoice_id);
 
-        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'status' => $status, 'invoiceItems' => $invoiceItems, 'invoiceInfo' => $invoiceInfo));
+        //gets all the paid transactions for a specific invoice id
+        $invoiceTransactions = $this->homeRepository->getTransactionFromInvoiceId($invoice_id);
+
+        return view('invoices.edit-invoice', array('invoice_id' => $invoice_id, 'clients' => $clients, 'status' => $status, 'invoiceItems' => $invoiceItems, 
+                                                   'invoiceInfo' => $invoiceInfo, 'invoiceTransactions' => $invoiceTransactions));
     }
 
     public function updateInvoice(Request $request)
     {   
+
         //Initialization of amount of the invoice
         $amount = 0;
         //Parsing all the items of the invoice that we need to update
@@ -362,8 +463,7 @@ class HomeController extends Controller
         //if the submit button of the edit invoice page is clicked, validate the input and update them in the database
         $this->validate($request, ['invoice_id' => 'required', 
                                     'invoice_date' => 'required',
-                                    'invoice_status' => 'required',
-                                    'invoice_paid' => 'required']);
+                                    'invoice_status' => 'required']);
 
         //Update the invoice with the final amount calculated above
         $this->homeRepository->updateInvoice($request->only('invoice_id', 'invoice_client', 'invoice_date', 'invoice_status', 'invoice_paid'), $amount);
@@ -372,8 +472,51 @@ class HomeController extends Controller
         //gets all invoices and their information 
         $invoicesList = $this->homeRepository->getInvoices();
 
+
         return view('invoices.index', array('invoicesList' => $invoicesList));
     }
+
+
+
+    public function updateNoDraftInvoice(Request $request)
+    {   
+        
+        //gets all information of a specific invoice
+        $invoiceInfo = $this->homeRepository->getInvoice($request->input('invoice_id'));
+
+        // if we need to enter a new payment
+        if($request->input('new_payment') == 1)
+        {
+            $new_payment_value = $request->input('invoice_paid');
+            $this->validate($request, ['invoice_paid' => 'required']);
+            
+            //concatenate the description in a variable
+            $description = $new_payment_value.' USD payed from the invoice number '.$invoiceInfo[0]->invoice_id;
+            $actual_date = date('Y-m-d H:i:s');
+            //add a transaction for the payment of the invoice
+            $this->homeRepository->addTransaction($invoiceInfo[0]->invoice_id, null, $invoiceInfo[0]->client_id, $new_payment_value, $description, 
+                                                  $actual_date, 1);
+
+            if($invoiceInfo[0]->paid != null && $invoiceInfo[0]->paid > 0)
+            {
+                $new_paid_amount = $invoiceInfo[0]->paid + $new_payment_value;
+                // update the paid amount 
+                $this->homeRepository->updateInvoicePaidAmount($invoiceInfo[0]->invoice_id, $new_paid_amount);
+            } 
+        }  
+
+
+        // update the status of the invoice in case it is changed
+        if(!is_null($request->input('invoice_status')))
+        $this->homeRepository->updateInvoiceStatus($invoiceInfo[0]->invoice_id, $request->input('invoice_status'));
+        $request->session()->flash('flash_message','Invoice Successfully updated!');
+
+        //gets all invoices and their information 
+        $invoicesList = $this->homeRepository->getInvoices();
+
+        return view('invoices.index', array('invoicesList' => $invoicesList));
+    }
+
 
     public function printInvoice($invoice_id)
     {
@@ -395,14 +538,14 @@ class HomeController extends Controller
 
         $client_email = $invoiceInfo[0]->email;
 
-        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email)
+        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id)
         {
             $message->from('info@webneoo.com', 'Webneoo');
-            $message->to($client_email)->subject('Webneoo Invoice');
+            $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
             $message->attachData($pdf->output(), "invoice.pdf");
         });
 
-        $this->homeRepository->updateInvoiceStatusToSent($invoice_id);
+        $this->homeRepository->updateInvoiceStatus($invoice_id, 1);
 
         $request->session()->flash('flash_message','Invoice Successfully Sent!');
         //gets all invoices and their information 
@@ -438,8 +581,15 @@ class HomeController extends Controller
 
     public function transactions()
     {
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
         return view('transactions.index', array('transactionsList' => $transactionsList));
     }
 
@@ -452,23 +602,34 @@ class HomeController extends Controller
 
     public function addTransaction()
     {
-        return view('transactions.add-transaction');
+        $all_sources = $this->homeRepository->getAllSources();
+
+        return view('transactions.add-transaction', array('all_sources' => $all_sources));
     }
 
     public function storeTransaction(Request $request)
-    {
+    {   
         //if the submit button of the add transaction page is clicked, validate the input and insert them in the database
-        $this->validate($request, ['transaction_invoice' => 'required', 
-                                    'transaction_source' => 'required', 
+        $this->validate($request, [ 'transaction_source' => 'required', 
                                     'transaction_amount' => 'required',
-                                    'transaction_contact' => 'required',
+                                    'transaction_description' => 'required',
                                     'transaction_date' => 'required',
-                                    'transaction_type' => 'required']);
-        $this->homeRepository->addTransaction($request->only('transaction_invoice', 'transaction_source', 'transaction_amount', 'transaction_contact', 'transaction_date', 'transaction_type'));
+                                    'transaction_type' => 'required']); 
+        $this->homeRepository->addTransaction(null, $request->input('transaction_invoice'), $request->input('transaction_source'), $request->input('transaction_amount'), 
+                                              $request->input('transaction_description'), $request->input('transaction_date'), $request->input('transaction_type'));
+        
+
         $request->session()->flash('flash_message','Transaction Successfully added!');
 
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
 
         return view('transactions.index', array('transactionsList' => $transactionsList));
     }
@@ -480,34 +641,185 @@ class HomeController extends Controller
         return view('transactions.edit-transaction', array('transaction_id' => $transaction_id, 'transactionInfo' => $transactionInfo));
     }
 
-    public function updateTransaction(Request $request)
-    {
-        //if the submit button of the edit transaction page is clicked, validate the input and update them in the database
-        $this->validate($request, ['transaction_id' => 'required',
-                                    'transaction_invoice' => 'required', 
-                                    'transaction_source' => 'required', 
-                                    'transaction_amount' => 'required',
-                                    'transaction_contact' => 'required',
-                                    'transaction_date' => 'required',
-                                    'transaction_type' => 'required']);
-        $this->homeRepository->updateTransaction($request->only('transaction_id', 'transaction_invoice', 'transaction_source', 'transaction_amount', 'transaction_contact', 'transaction_date', 'transaction_type'));
-        $request->session()->flash('flash_message','Transaction Successfully updated!');
-
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
-
-        return view('transactions.index', array('transactionsList' => $transactionsList));
-    }
-
+  
     public function hideTransaction($transaction_id)
     {
         $this->homeRepository->hideTransaction($transaction_id);
 
-        //gets all transactions and their information 
-        $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
         $request->session()->flash('flash_message','Transaction Successfully removed!');
 
         return view('transactions.index', array('transactionsList' => $transactionsList));
     }
+
+
+
+
+    /* --------------------------------
+    SALARIES
+    -----------------------------------*/
+
+    public function team()
+    {
+        
+        // get all the info of the team
+        $teamInfo = $this->homeRepository->getTeamInfo();
+
+        return view('team.index', array('teamInfo' => $teamInfo));
+    }
+
+
+    public function profileDetails($user_id)
+    {
+        
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+        return view('team.profile-details', array('user_info' => $user_info));
+    }
+
+
+
+
+
+    /* --------------------------------
+    TRANSPORTATION
+    -----------------------------------*/
+
+    public function transportation($user_id)
+    {
+        
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+        // get the transportation of a specific user
+        $transportation_info = $this->homeRepository->getTransportation($user_id);
+
+        return view('team.transportation', array('user_info' => $user_info, 'transportation_info' => $transportation_info));
+    }
+
+
+    public function storeTransportation(Request $request, $user_id)
+    {
+        
+        //if the submit button of the add transportation page is clicked, validate the input and insert them in the database
+        $this->validate($request, [ 'transport_date' => 'required', 
+                                    'transport_place' => 'required',
+                                    'transport_reason' => 'required',
+                                    'transport_price' => 'required']); 
+        //add the new transporation
+        $this->homeRepository->addTransportation($request->only('transport_date', 'transport_place', 'transport_reason', 'transport_price'), $user_id);
+    
+        $request->session()->flash('flash_message','Transportation successfully added!');
+
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+
+        // get the transportation of a specific user
+        $transportation_info = $this->homeRepository->getTransportation($user_id);
+        
+
+        return view('team.transportation', array('user_info' => $user_info, 'transportation_info' => $transportation_info));
+    }
+
+
+
+    public function salary($user_id)
+    {
+        
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+        return view('team.salary', array('user_info' => $user_info));
+    }
+
+
+
+    public function previewSalary(Request $request, $user_id)
+    {   
+
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+       // get the total transportation for the selected month for a specific user
+        $transport_amount = $this->homeRepository->calculateMonthlyTranportation($user_id, $request->transport_date);
+        if($transport_amount != NULL)
+        $transport_amount = (float)$transport_amount[0]->transport_amount;
+        else
+        $transport_amount = 0;
+
+       
+
+        // calculating the amount to reduce from the days off
+        if(isset($request->days_off) || $request->days_off != 0)
+        $days_off_amount = ($user_info[0]->base_salary / 20.0)* $request->days_off;
+        else
+        $days_off_amount = 0;
+
+        $bonus_amount = (float)$request->bonus;
+        $base_salary_amount = (float)$user_info[0]->base_salary;
+
+        $total_amount = ($base_salary_amount + $transport_amount - $days_off_amount + $bonus_amount);
+
+
+        return view('team.salary', array('user_info' => $user_info, 'base_salary_amount' => $base_salary_amount, 'transport_amount' => $transport_amount, 
+                                         'days_off_amount' => $days_off_amount, 'bonus_amount' => $bonus_amount, 'total_amount' => $total_amount, 'month' => $request->transport_date));
+        
+    }
+
+
+
+    public function storeSalary(Request $request, $user_id)
+    {   
+
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
+
+        $base_salary_amount = (float)$request->base_salary_amount;
+        $transport_amount = (float)$request->transport_amount;
+        $days_off_amount = (float)$request->days_off_amount;
+        $bonus_amount = (float)$request->bonus_amount;
+        $total_amount = (float)$request->total_amount;
+        $description = $request->description;
+        $salary_date = $request->transport_date;
+
+        //store the salary as a transaction
+        $this->homeRepository->addSalary($base_salary_amount, $transport_amount, $days_off_amount, 
+                                         $bonus_amount, $total_amount, $description, $salary_date, $user_id);
+                                                      
+       
+        // if the user is not admin
+        if (\Auth::user()->role_id != 1)
+         // get the accountant transactions list
+            $transactionsList = $this->homeRepository->getTransactions();
+        // if the user is admin
+        else
+        // get all transactions
+            $transactionsList = $this->homeRepository->getAllTransactions();
+
+
+          $request->session()->flash('flash_message','Salary Successfully added!');
+
+        return view('transactions.index', array('transactionsList' => $transactionsList));
+        
+    }
+
+    
+
+
+
+
+    
+
+
 
 }

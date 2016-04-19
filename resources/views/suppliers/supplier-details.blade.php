@@ -13,23 +13,75 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
-            @foreach($supplierInfo as $ci)
-                <div class="panel-heading">Name</div>
-                <div class="panel-body">{{ $ci->name }}</div>
-                <div class="panel-heading">Description</div>
-                <div class="panel-body">{{ $ci->desc }}</div>
-                <div class="panel-heading">Email</div>
-                <div class="panel-body">{{ $ci->email }}</div>
-                <div class="panel-heading">Phone</div>
-                <div class="panel-body">{{ $ci->phone }}</div>
-                <div class="panel-heading">Address</div>
-                <div class="panel-body">{{ $ci->address }}</div>
-                <div class="panel-heading">Owner</div>
-                <div class="panel-body">{{ $ci->owner }}</div>
-                <div class="panel-heading">Contact Name</div>
-                <div class="panel-body">{{ $ci->contact_name }}</div>
-                <div class="panel-heading">Accounting ID</div>
-                <div class="panel-body">{{ $ci->accounting_id }}</div>
+                
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title" style="position:relative; top:-6px; font-weight:bold;">{{ $supplierInfo[0]->name }}</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3 col-lg-3 " align="center"> 
+                    @if($supplierInfo[0]->img == NULL)
+                        <img alt="User Pic" src="images/supplier.png" class="img-circle img-responsive"> 
+                    @else
+                        <img alt="User Pic" src="images/suppliers/{{$supplierInfo[0]->img}}" class="img-responsive"> 
+                    @endif
+                </div>
+                
+                <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td>Name:</td>
+                        <td><b>{{ $supplierInfo[0]->name }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Description:</td>
+                        <td><b>{{ $supplierInfo[0]->desc }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Email:</td>
+                        <td><b><a href="mailto:{{ $supplierInfo[0]->email }}">{{ $supplierInfo[0]->email }}</a></b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Phone:</td>
+                        <td><b>{{ $supplierInfo[0]->phone }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Address:</td>
+                        <td><b>{{ $supplierInfo[0]->address }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Owner:</td>
+                        <td><b>{{ $supplierInfo[0]->owner }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Contact Name:</td>
+                        <td><b>{{ $supplierInfo[0]->contact_name }}</b></td>
+                      </tr>
+
+                      <tr>
+                        <td>Financial number:</td>
+                        <td><b>{{ $supplierInfo[0]->accounting_id }}</b></td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                  
+                </div>
+              </div>
+            </div>
+
+    </div>
+    <!-- panel panel-info -->
+
                 @if($spentTransactionsList)
                 <div class="panel-heading">Total Amount Spent</div>
                 <div class="panel-body">
@@ -54,7 +106,6 @@
                                         <td>$ {{ $i->amount }}.00</td>
                                         <td>{{ $i->contact_name }}</td>
                                         <td>
-                                            <a href="{{ route('edit_transaction_path', $i->transaction_id) }}"><i class="fa fa-pencil-square-o"></i></a>
                                             <a href="{{ route('hide_transaction_path', $i->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
                                         </td>
                                     </tr>
@@ -68,7 +119,7 @@
                 <div class="panel-body">
                     <div id="morris-bar-chart"></div>
                 </div>
-            @endforeach
+          
         </div>
     </div>
 </div>
@@ -88,7 +139,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.table').DataTable({
+        // I changed the selector of table to select all the tables except the first one
+
+         $(".table:not(:first)").DataTable({
             "order": [[ 0, "desc" ]]
         });
 

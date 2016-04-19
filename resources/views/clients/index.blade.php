@@ -26,6 +26,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Logo</th>
                             <th>Name</th>
                             <th>Next Payments</th>
                             <th>Total Amount Due</th>
@@ -38,6 +39,13 @@
                         @foreach($clientsList as $c)             
                             <tr>
                                 <td>{{ $c->source_id }}</td>
+                                <td>
+                                    @if($c->img == NULL) 
+                                        <img width="40px;" src="/images/client.jpg"/>
+                                    @else
+                                        <img width="40px;" src="/images/clients/{{$c->img}}"/>
+                                    @endif
+                                </td>
                                 <td><a href="{{ route('view_client_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
                                 <td>
                                     @if(isset($c->total_income))

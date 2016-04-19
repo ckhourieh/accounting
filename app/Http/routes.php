@@ -31,11 +31,7 @@ Route::get('/', [
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    //Dashboard
-    Route::get('/dashboard', [
-        'as' => 'dashboard_path',
-        'uses' => 'HomeController@dashboard'
-    ]);
+   
 
     //Clients
     Route::get('/clients', [
@@ -172,9 +168,6 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@hideSupplier'
     ]);
 
-
-
-
     //Invoices
     Route::get('/invoices', [
         'as' => 'invoices_path',
@@ -211,6 +204,13 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@updateInvoice'
     ]);
 
+    //Edit no draft Invoice
+    Route::post('/invoices/edit-no-draft-invoice-{invoice_id}', [
+        'as' => 'edit_no_draft_invoice_path',
+        'uses' => 'HomeController@updateNoDraftInvoice'
+    ]);
+    
+
     //Print Invoice
     Route::get('/invoices/print-invoice-{invoice_id}', [
         'as' => 'print_invoice_path',
@@ -234,14 +234,6 @@ Route::group(['middleware' => 'web'], function () {
         'as' => 'hide_invoice_path',
         'uses' => 'HomeController@hideInvoice'
     ]);
-
-    //Hide Invoice
-    Route::post('/invoices/hide-invoice-{invoice_id}', [
-        'as' => 'hide_invoice_path',
-        'uses' => 'HomeController@hideInvoice'
-    ]);
-
-
 
 
     //Transactions
@@ -268,18 +260,6 @@ Route::group(['middleware' => 'web'], function () {
         'uses' => 'HomeController@storeTransaction'
     ]);
 
-    //Edit Transaction
-    Route::get('/transactions/edit-transaction-{transaction_id}', [
-        'as' => 'edit_transaction_path',
-        'uses' => 'HomeController@editTransaction'
-    ]);
-
-    //Edit Transaction
-    Route::post('/transactions/edit-transaction-{transaction_id}', [
-        'as' => 'edit_transaction_path',
-        'uses' => 'HomeController@updateTransaction'
-    ]);
-
     //Hide Transaction
     Route::get('/transactions/hide-transaction-{transaction_id}', [
         'as' => 'hide_transaction_path',
@@ -291,6 +271,82 @@ Route::group(['middleware' => 'web'], function () {
         'as' => 'hide_transaction_path',
         'uses' => 'HomeController@hideTransaction'
     ]);
+
+
+
+
+      Route::group(['middleware' => 'admin'], function () {
+
+            //Dashboard
+            Route::get('/dashboard', [
+                'as' => 'dashboard_path',
+                'uses' => 'HomeController@dashboard'
+            ]);
+
+
+          //view profile for salaries
+            Route::get('/team', [
+                'as' => 'team_path',
+                'uses' => 'HomeController@team'
+            ]);
+
+            //view profile details for salary
+            Route::get('/profile-details-{user_id}', [
+                'as' => 'profile_details_path',
+                'uses' => 'HomeController@profileDetails'
+            ]);
+
+
+
+
+            //view and add transportation
+            Route::get('/transportation-{user_id}', [
+                'as' => 'transportation_path',
+                'uses' => 'HomeController@transportation'
+            ]);
+
+
+            //store a transportation 
+            Route::post('/add-transportation-{user_id}', [
+                'as' => 'add_transportation_path',
+                'uses' => 'HomeController@storeTransportation'
+            ]);
+
+
+            //view and add transportation
+            Route::get('/salary-{user_id}', [
+                'as' => 'salary_path',
+                'uses' => 'HomeController@salary'
+            ]);
+
+
+            //prieview salaries
+            Route::post('/preview-salary-{user_id}', [
+                'as' => 'preview_salary_path',
+                'uses' => 'HomeController@previewSalary'
+            ]);
+
+
+            //store the salaries in the transaction
+            Route::post('/add-salary-{user_id}', [
+                'as' => 'add_salary_path',
+                'uses' => 'HomeController@storeSalary'
+            ]);
+
+
+
+
+    });
+
+
+
+  
+    
+
+
+    
+
+   
 
 
 });

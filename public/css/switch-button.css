@@ -1,0 +1,101 @@
+.onoffswitch {
+    position: relative; width: 82px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 1px solid #999999; border-radius: 10px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 34px; padding: 0; line-height: 34px;
+    font-size: 13px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "YES";
+    padding-left: 11px;
+    background-color: #398439; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "NO";
+    padding-right: 11px;
+    background-color: #C9302C; color: #FFFFFF;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 34px; margin: 2px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 44px;
+    border: 1px solid #999999; border-radius: 10px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+
+
+
+
+
+#suppliers td, #clients td  
+{
+    vertical-align: middle;
+}
+
+#suppliers td:nth-child(2) ,#clients td:nth-child(2)
+{   
+    width:10%;
+    text-align:center;
+}
+
+.placeholder
+{
+    text-align:center;
+}
+
+.placeholder img
+{
+    display: inline-block;
+    border-radius: 50%;
+    vertical-align: middle;
+    border:0;
+ 
+  -webkit-transition: all 0.5s ease;
+     -moz-transition: all 0.5s ease;
+       -o-transition: all 0.5s ease;
+      -ms-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+}
+
+
+.placeholder img:hover
+{
+    cursor:pointer;
+    border: 15px solid #007cc2;
+   border-radius: 50%;
+
+}
+
+.text-muted
+{
+    color:#777;
+}
+
+
+.body_login
+{
+    background-image:url('../images/background.jpg');
+    background-size: cover;
+}
+
