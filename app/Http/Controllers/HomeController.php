@@ -201,7 +201,7 @@ class HomeController extends Controller
     public function updateClient(Request $request)
     {   
         //gets all information of a specific client
-        $clientInfo = $this->homeRepository->getSource($client_id);
+        $clientInfo = $this->homeRepository->getSource($request->input('source_id'));
 
         //if the submit button of the edit client page is clicked, validate the input and update them in the database
         $this->validate($request, ['source_id' => 'required',
