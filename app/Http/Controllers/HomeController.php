@@ -172,8 +172,7 @@ class HomeController extends Controller
                                     'client_phone' => 'required',
                                     'client_address' => 'required',
                                     'client_owner' => 'required',
-                                    'client_contact' => 'required',
-                                    'client_accounting' => 'required']);
+                                    'client_contact' => 'required']);
 
         if ($request->hasFile('client_img')) 
         {  
@@ -200,7 +199,10 @@ class HomeController extends Controller
     }
 
     public function updateClient(Request $request)
-    {
+    {   
+        //gets all information of a specific client
+        $clientInfo = $this->homeRepository->getSource($client_id);
+
         //if the submit button of the edit client page is clicked, validate the input and update them in the database
         $this->validate($request, ['source_id' => 'required',
                                     'source_name' => 'required', 
@@ -218,6 +220,9 @@ class HomeController extends Controller
             $file->move('images/clients/', $file_name);
             $request->filename = $file_name;
         }
+
+        else if($clientInfo[0]->img != NULL)
+            $request->filename = $clientInfo[0]->img;
 
         $this->homeRepository->updateSource($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'), $request->filename);
         $request->session()->flash('flash_message','Client Successfully updated!');
