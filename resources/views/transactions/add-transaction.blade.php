@@ -66,6 +66,16 @@
                             </div>
 
                             <div class="form-group">
+                                <label>Transaction category</label>
+                                <select class="form-control" name="transaction_source">
+                                    <option style="background:#999999; color:white" value="" disabled selected>Select the category of the transaction</option>
+                                    @foreach($category_list as $c)
+                                        <option @if (Request::old('transaction_category_id') == $c->category_id) selected="selected" @endif value="{{ $c->category_id }}">{{ $c->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label>Description</label>
                                 <textarea class="form-control" Placeholder="Description" name="transaction_description">{{  Request::old('transaction_description') }}</textarea>
                             </div>

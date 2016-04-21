@@ -602,14 +602,18 @@ class HomeController extends Controller
     {
         //gets all information of a specific transaction
         $transactionInfo = $this->homeRepository->getTransaction($transaction_id);
+
         return view('transactions.transaction-details', array('transactionInfo' => $transactionInfo));
     }
 
     public function addTransaction()
-    {
+    {   
         $all_sources = $this->homeRepository->getAllSources();
 
-        return view('transactions.add-transaction', array('all_sources' => $all_sources));
+        // get the list of all the categories in the database
+        $category_list = $this->homeRepository->getAllCategories();
+
+        return view('transactions.add-transaction', array('all_sources' => $all_sources,'category_list' => $category_list));
     }
 
     public function storeTransaction(Request $request)
@@ -618,10 +622,12 @@ class HomeController extends Controller
         $this->validate($request, [ 'transaction_source' => 'required', 
                                     'transaction_amount' => 'required',
                                     'transaction_description' => 'required',
+                                    'transaction_category_id' => 'required',
                                     'transaction_date' => 'required',
                                     'transaction_type' => 'required']); 
         $this->homeRepository->addTransaction(null, $request->input('transaction_invoice'), $request->input('transaction_source'), $request->input('transaction_amount'), 
-                                              $request->input('transaction_description'), $request->input('transaction_date'), $request->input('transaction_type'));
+                                              $request->input('transaction_description'), $request->input('transaction_category_id'), $request->input('transaction_date'), 
+                                              $request->input('transaction_type'));
         
 
         $request->session()->flash('flash_message','Transaction Successfully added!');
@@ -643,7 +649,12 @@ class HomeController extends Controller
     {
         //gets all information of a specific transaction
         $transactionInfo = $this->homeRepository->getTransaction($transaction_id);
-        return view('transactions.edit-transaction', array('transaction_id' => $transaction_id, 'transactionInfo' => $transactionInfo));
+
+        // get the list of all the categories in the database
+        $category_list = $this->homeRepository->getAllCategories();
+
+        return view('transactions.edit-transaction', 
+                    array('transaction_id' => $transaction_id, 'transactionInfo' => $transactionInfo, 'category_list' => $category_list));
     }
 
   
