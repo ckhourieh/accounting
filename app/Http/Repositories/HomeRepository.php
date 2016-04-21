@@ -168,7 +168,8 @@ class HomeRepository {
             'accounting_id' => $input['supplier_accounting'],
             'hidden' => '0',
             'type_id' => '2',
-            'created_at' => Carbon::now('Asia/Beirut')
+            'created_at' => Carbon::now('Asia/Beirut'),
+            'updated_at' => Carbon::now('Asia/Beirut')
         ]);
     }
 
