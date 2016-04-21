@@ -68,7 +68,7 @@ class HomeRepository {
     ------------------------------------*/
     public function getAllSources()
     {
-        $q = \DB::select("SELECT * FROM ta_sources WHERE hidden = 1 ORDER BY name");
+        $q = \DB::select("SELECT * FROM ta_sources WHERE hidden = 0 ORDER BY name");
         return $q;
     }
 
