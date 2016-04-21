@@ -528,10 +528,25 @@ class HomeRepository {
         return $q;
     }
 
+
+     /*----------------------------------
+    Get the list of all the categories
+    ------------------------------------*/
+    public function getAllCategories()
+    {
+        $q = \DB::select("SELECT *
+                          FROM ta_categories
+                          ORDER BY name ASC");
+        return $q;
+    }
+
+    
+
     /*----------------------------------
     Add a new transaction
     ------------------------------------*/
-    public function addTransaction($transaction_invoice_id, $transaction_invoice_number, $transaction_source, $transaction_amount, $transaction_description, 
+    public function addTransaction($transaction_invoice_id, $transaction_invoice_number, $transaction_source, 
+                                   $transaction_amount, $transaction_description, $transaction_category_id, 
                                    $transaction_date, $transaction_type)
     {   
         if($transaction_invoice_number == "")
@@ -542,7 +557,8 @@ class HomeRepository {
             'invoice_number' => $transaction_invoice_number,
             'source_id' => $transaction_source, 
             'amount' => $transaction_amount,
-            'description' => $transaction_description, 
+            'description' => $transaction_description,
+            'category_id' => $transaction_category_id,
             'date' => $transaction_date,
             'type' => $transaction_type,
             'hidden' => '0',
