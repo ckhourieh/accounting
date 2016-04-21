@@ -35,7 +35,9 @@
                     <b>{{ $data[0]->client_name }}</b><br>
                     {{ $data[0]->address }}<br>
                     {{ $data[0]->phone }} <br>
+                    @if(!empty($data[0]->accounting_id) || $data[0]->accounting_id != NULL )
                     Financial #: {{ $data[0]->accounting_id }}
+                    @endif
                 </li>
                 <li style="float:right; width:50%; text-align:right; display:inline-block; line-height:28px">
                     <b>Invoice Number: </b>{{ $data[0]->invoice_id }}<br>
