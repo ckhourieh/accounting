@@ -361,7 +361,8 @@ class HomeRepository {
             'service_type_id' => $invoice_item_service,
             'amount' => $invoice_item_amount,
             'invoice_id' => $lastInvoiceId,
-            'created_at' => Carbon::now('Asia/Beirut')
+            'created_at' => Carbon::now('Asia/Beirut'),
+            'updated_at' => Carbon::now('Asia/Beirut')
         ]);
     }
 
@@ -396,10 +397,12 @@ class HomeRepository {
                     'invoice_id' => $input['invoice_id'],
                     'source_id' => $q[0]->source_id, 
                     'amount' => $amount,
+                    'category_id' => 10,
                     'date' => $input['invoice_date'],
                     'type' => '1',
                     'hidden' => '0',
-                    'created_at' => Carbon::now('Asia/Beirut')
+                    'created_at' => Carbon::now('Asia/Beirut'),
+                    'updated_at' => Carbon::now('Asia/Beirut')
                 ]);
             }
             
