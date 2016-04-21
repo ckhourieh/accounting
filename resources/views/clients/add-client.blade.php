@@ -52,7 +52,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Address</label>
-                                <textarea class="form-control" rows="3" name="client_address" placeholder="Enter Client Address" value="{{  Request::old('client_address') }}"></textarea>
+                                <textarea class="form-control" rows="3" name="client_address" placeholder="Enter Client Address">{{  Request::old('client_address') }}</textarea>
                             </div>
                             <div class="form-group">
                                 <label>Owner</label>

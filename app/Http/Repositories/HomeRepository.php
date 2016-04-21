@@ -68,7 +68,7 @@ class HomeRepository {
     ------------------------------------*/
     public function getAllSources()
     {
-        $q = \DB::select("SELECT * FROM ta_sources WHERE hidden = 1 ORDER BY name");
+        $q = \DB::select("SELECT * FROM ta_sources WHERE hidden = 0 ORDER BY name");
         return $q;
     }
 
@@ -168,7 +168,8 @@ class HomeRepository {
             'accounting_id' => $input['supplier_accounting'],
             'hidden' => '0',
             'type_id' => '2',
-            'created_at' => Carbon::now('Asia/Beirut')
+            'created_at' => Carbon::now('Asia/Beirut'),
+            'updated_at' => Carbon::now('Asia/Beirut')
         ]);
     }
 
