@@ -184,7 +184,7 @@
      $(function () {
          $('#datetimepicker1').datetimepicker({
              pickTime: false,
-             format: 'YYYY-MM',
+             format: 'YYYY-MM-DD',
              viewMode: "months",
              defaultDate: new Date()
          });
