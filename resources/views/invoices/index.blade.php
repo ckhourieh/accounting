@@ -49,16 +49,18 @@
                                     {{ $i->next_payment }}
                                     @endif
                                 </td>
-                                <td>$ {{ number_format($i->amount) }}.00</td>
+                               
+                                <td>$ {{ number_format($i->amount, 2, '.', ' ') }}</td>
                                 <td style="color:{{$i->color_code}}"><b>{{ $i->status }}</b></td>
                                 <td style="color:#5cb85c">
                                     @if($i->paid)
-                                        $ {{ number_format($i->paid) }}.00
+                                        {{ number_format($i->paid, 2, '.', ' ') }}
                                     @endif
                                 </td>
                                 <td style="color:#d9534f">
                                     @if($i->amount - $i->paid)
-                                        $ {{ number_format($i->amount - $i->paid) }}.00
+                                        <?php $r=($i->amount - $i->paid);  ?>
+                                        {{ number_format($r, 2, '.', ' ') }}
                                     @endif
                                 </td>
                                 <td>

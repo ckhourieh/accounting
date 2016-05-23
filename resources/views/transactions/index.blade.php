@@ -57,11 +57,11 @@
                                     @endif
                                 </td>
                                 <td>{{ $t->description }}</td>
-                                @if($t->type==0)
-                                    <td style="color:#d9534f">$ {{ $t->amount }}.00</td>
+                                @if($t->type==0) 
+                                    <td style="color:#d9534f">$ {{ number_format($t->amount, 2, '.', ' ') }}</td>
                                     <td style="color:#d9534f"><i class="fa fa-arrow-up"></i> &nbsp&nbsp OUT </td>
                                 @elseif($t->type==1)
-                                    <td style="color:#5cb85c">$ {{ $t->amount }}.00</td>
+                                    <td style="color:#5cb85c">$ {{ number_format($t->amount, 2, '.', ' ') }}</td>
                                     <td style="color:#5cb85c"><i class="fa fa-arrow-down"></i> &nbsp&nbsp IN </td>
                                 @endif
                                 <td>
