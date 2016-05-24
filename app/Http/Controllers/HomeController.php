@@ -499,7 +499,7 @@ class HomeController extends Controller
             $description = $new_payment_value.' USD payed from the invoice number '.$invoiceInfo[0]->invoice_id;
             $actual_date = date('Y-m-d H:i:s');
             //add a transaction for the payment of the invoice
-            $this->homeRepository->addTransaction($invoiceInfo[0]->invoice_id, null, $invoiceInfo[0]->client_id, $new_payment_value, $description, 
+            $this->homeRepository->addTransaction($invoiceInfo[0]->invoice_id, null, $invoiceInfo[0]->client_id, $new_payment_value, $description, 10 
                                                   $actual_date, 1);
 
             if($invoiceInfo[0]->paid != null && $invoiceInfo[0]->paid > 0)
