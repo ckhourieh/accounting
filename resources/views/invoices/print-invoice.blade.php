@@ -10,7 +10,7 @@
     <div style="font-size:14px;line-height:24px;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;">
 
         <ul style="list-style-type:none; height:180px; padding: 0 30px;">
-            <li style="float:left; width:50%; display:inline-block; margin-top:20px;"><img src="http://accounting.dev/images/logo.png" style="width:100%;max-width:300px;"></li>
+            <li style="float:left; width:50%; display:inline-block; margin-top:20px;"><img src="http://accounting.webneoodemo.com/images/logo.png" style="width:100%;max-width:300px;"></li>
             <li style="float:right; width:50%; text-align:right; display:inline-block;">
                 <h1>INVOICE</h1>
                 <b>Webneoo</b> <br>

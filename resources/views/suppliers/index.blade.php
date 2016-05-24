@@ -47,7 +47,7 @@
                                 <td><a href="{{ route('view_supplier_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
                                 <td>
                                     @if(isset($c->total_amount_spent))
-                                    <a href="{{ route('total_amount_spent_path', $c->source_id) }}" style="color:#d9534f">$ {{ $c->total_amount_spent }}.00</a>
+                                    <a href="{{ route('total_amount_spent_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format( $c->total_amount_spent, 2, '.', ' ') }}</a>
                                     @endif
                                 </td>
                                 <td><a href="{{ route('supplier_timeline_path', $c->source_id) }}">See Graph</a></td>

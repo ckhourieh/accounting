@@ -16,7 +16,7 @@
         <div style="width:21cm;height:29.7cm;margin:0 auto;margin-bottom:0.5cm;padding:30px;border:1px solid #eee;box-shadow:0 0 10px rgba(0, 0, 0, .15);font-size:14px;line-height:24px;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;color:#555;background-color:#fff;">
 
             <ul style="list-style-type:none; height:180px; padding: 0 30px;">
-                <li style="float:left; width:50%; display:inline-block; margin-top:20px;"><img src="http://accounting.dev/images/logo.png" style="width:100%;max-width:300px;"></li>
+                <li style="float:left; width:50%; display:inline-block; margin-top:20px;"><img src="http://accounting.webneoodemo.com/images/logo.png" style="width:100%;max-width:300px;"></li>
                 <li style="float:right; width:50%; text-align:right; display:inline-block;">
                     <h1>INVOICE</h1><br>
                     <b>Webneoo</b> <br>
