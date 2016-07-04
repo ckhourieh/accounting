@@ -320,8 +320,8 @@ Route::group(['middleware' => 'web'], function () {
             ]);
 
 
-            //prieview salaries
-            Route::post('/preview-salary-{user_id}', [
+            //preview salaries
+            Route::post('/preview-salary-{user_id}-{month}-{year}', [
                 'as' => 'preview_salary_path',
                 'uses' => 'HomeController@previewSalary'
             ]);
@@ -331,6 +331,13 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/add-salary-{user_id}', [
                 'as' => 'add_salary_path',
                 'uses' => 'HomeController@storeSalary'
+            ]);
+
+
+            //Print salaries
+            Route::get('/team/print-salary-{user_id}-{month}-{year}', [
+                'as' => 'print_salary_path',
+                'uses' => 'HomeController@printSalary'
             ]);
 
 

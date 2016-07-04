@@ -32,7 +32,9 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-12">
-                          {!! Form::open(array('route' => array('preview_salary_path', $user_info[0]->id))) !!} 
+
+                          {!! Form::open(array('route' => array('preview_salary_path', $user_info[0]->id, $selected_month, $selected_year))) !!} 
+                   
                           <div class="row"></div>
 
                                 <div class="form-group col-lg-3">
@@ -108,12 +110,6 @@
                                           </tr>
 
                                           <tr>
-                                            <td>Transportation:</td>
-                                            <td style="color:#5cb85c"><b>${{ $transport_amount }}</b></td>
-                                          </tr>
-
-
-                                          <tr>
                                             <td>Days off:</td>
                                             <td style="color:#d43f3a"><b>${{ $days_off_amount }}</b></td>
                                           </tr>
@@ -122,6 +118,40 @@
                                             <td>Bonus:</td>
                                             <td style="color:#5cb85c"><b>${{ $bonus_amount }}</b></td>
                                           </tr>
+
+                                          <tr>
+                                            <td>Transportation:</td>
+                                            <td style="color:#5cb85c"><b>${{ $transport_amount }}</b></td>
+                                          </tr>
+
+                                          @if($transport_details != NULL)
+                                          <tr> 
+                                            <td colspan="2">
+                                              <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                                                  <thead>
+                                                      <tr>
+                                                          <th><b>#</b></th>
+                                                          <th><b>Date</b></th>
+                                                          <th><b>Place</b></th>
+                                                          <th><b>Reason</b></th>
+                                                          <th><b>Price</b></th>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody> 
+                                                  @foreach($transport_details as $td)             
+                                                      <tr>
+                                                          <td>{{ $td->transport_id }}</td>
+                                                          <td>{{ $td->transport_date }}</td>
+                                                          <td>{{ $td->place }}</td>
+                                                          <td>{{ $td->reason }}</td>
+                                                          <td>{{ $td->price }}</td>
+                                                      </tr>
+                                                  @endforeach         
+                                                  </tbody>
+                                              </table>
+                                            </td> 
+                                          </tr>
+                                          @endif
 
                                            <tr>
                                             <td><h2>Total amount</h2></td>
@@ -148,7 +178,8 @@
                                            <input type="hidden" name="transport_date" value="{{ $month }}">
                                             
                                             <div class="form-group col-lg-12">
-                                                <button type="submit" class="btn btn-success btn-lg">Store Salary</button>
+                                                <button <?php if(!empty($salary_is_stored)) echo"disabled"; ?> type="submit" class="btn btn-success btn-lg">Store Salary</button>
+                                                <a <?php if(empty($salary_is_stored)) echo"disabled onclick='return false';"; ?> class="btn btn-info btn-lg btnPrint" href="{{ route('print_salary_path', array($user_info[0]->id, $selected_month, $selected_year)) }}"> <i class="fa fa-print"></i> Print Salary</a>
                                             </div>
 
                                        {!! Form::close() !!}
@@ -190,5 +221,13 @@
          });
      });
  </script>
+ <!-- PRINT PAGE -->
+<script type="text/javascript" src="/js/jquery.printPage.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".btnPrint").printPage();
+    });
+</script>
 
 @endsection

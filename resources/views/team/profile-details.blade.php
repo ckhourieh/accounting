@@ -106,6 +106,7 @@
 
                             </tbody>
                           </table>
+
                           <a href="{{ route('salary_path', $user_info[0]->id) }}" class="btn btn-success btn-lg"><i class="fa fa-money"></i> Salary</a>
                          <a  style="margin-left:50px;" href="{{ route('transportation_path', $user_info[0]->id) }}" class="btn btn-info btn-lg"><i class="fa fa-car"></i> Transportation</a>
                         </div>

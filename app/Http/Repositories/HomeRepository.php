@@ -668,6 +668,23 @@ class HomeRepository {
 
 
     /*----------------------------------
+    Get transportation by month for specific user
+    ------------------------------------*/
+    public function getTransportationByMonth($user_id, $month, $year)
+    {   
+         $q = \DB::select("SELECT *
+                           FROM ta_transport 
+                           WHERE user_id = :user_id
+                           AND MONTH(transport_date) = :month
+                           AND YEAR(transport_date) = :year",
+                array(':user_id' => $user_id,
+                      ':month' => $month,
+                      ':year' => $year));
+        return $q;
+    }
+
+
+    /*----------------------------------
     Get the transportation fees for a specific user for a specific month
     ------------------------------------*/
     public function calculateMonthlyTranportation($user_id, $selected_date)
@@ -679,6 +696,7 @@ class HomeRepository {
                             GROUP BY user_id",
                 array(':user_id' => $user_id));
         return $q;
+
     }
 
 
@@ -728,6 +746,25 @@ class HomeRepository {
 
         });
     }
+
+
+     public function checkIfSalaryIsStored($user_id, $month, $year)
+    {   
+         $q = \DB::select(" SELECT  *
+                            FROM ta_salary 
+                            WHERE user_id = :user_id
+                            AND MONTH(salary_date) = :month
+                            AND YEAR(salary_date) = :year",
+                array(':user_id' => $user_id,
+                      ':month' => $month,
+                      ':year' => $year));
+        return $q;
+
+    }
+
+
+
+
 
 
 

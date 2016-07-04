@@ -755,7 +755,10 @@ class HomeController extends Controller
         // get the info of a specific user
         $user_info = $this->homeRepository->getUserInfo($user_id);
 
-        return view('team.salary', array('user_info' => $user_info));
+        $actual_month = date('m');
+        $actual_year = date('Y');
+                     
+        return view('team.salary', array('user_info' => $user_info,'selected_month' => $actual_month, 'selected_year' => $actual_year));
     }
 
 
@@ -766,14 +769,6 @@ class HomeController extends Controller
         // get the info of a specific user
         $user_info = $this->homeRepository->getUserInfo($user_id);
 
-       // get the total transportation for the selected month for a specific user
-        $transport_amount = $this->homeRepository->calculateMonthlyTranportation($user_id, $request->transport_date);
-        if($transport_amount != NULL)
-        $transport_amount = (float)$transport_amount[0]->transport_amount;
-        else
-        $transport_amount = 0;
-
-       
 
         // calculating the amount to reduce from the days off
         if(isset($request->days_off) || $request->days_off != 0)
@@ -784,11 +779,35 @@ class HomeController extends Controller
         $bonus_amount = (float)$request->bonus;
         $base_salary_amount = (float)$user_info[0]->base_salary;
 
+
+        $month = date("m",strtotime($request->transport_date));
+        $year = date("Y",strtotime($request->transport_date));
+
+        // get the total transportation for the selected month for a specific user
+        $transport_amount = $this->homeRepository->calculateMonthlyTranportation($user_id, $request->transport_date);
+
+        if($transport_amount != NULL)
+        {   
+            $transport_amount = (float)$transport_amount[0]->transport_amount;
+      
+            // get the detailed amount of the transportation for this month
+            $transport_details = $this->homeRepository->getTransportationByMonth($user_id, $month, $year); 
+        }
+        else
+        {
+        $transport_amount = 0;
+        $transport_details = NULL;
+        }
+
         $total_amount = ($base_salary_amount + $transport_amount - $days_off_amount + $bonus_amount);
 
 
+        $salary_is_stored = $this->homeRepository->checkIfSalaryIsStored($user_id, $month, $year);
+
+
         return view('team.salary', array('user_info' => $user_info, 'base_salary_amount' => $base_salary_amount, 'transport_amount' => $transport_amount, 
-                                         'days_off_amount' => $days_off_amount, 'bonus_amount' => $bonus_amount, 'total_amount' => $total_amount, 'month' => $request->transport_date));
+                                         'days_off_amount' => $days_off_amount, 'bonus_amount' => $bonus_amount, 'total_amount' => $total_amount, 'month' => $request->transport_date, 'transport_details' => $transport_details, 'salary_is_stored' => $salary_is_stored,
+                                            'selected_month' => $month, 'selected_year' => $year));
         
     }
 
@@ -829,13 +848,32 @@ class HomeController extends Controller
         
     }
 
-    
 
 
+    public function printSalary($user_id, $month, $year)
+    {
+        
+        // get the info of a specific user
+        $user_info = $this->homeRepository->getUserInfo($user_id);
 
+       // get the salary details of a specific user for a specific date 
+        $salary_details = $this->homeRepository->checkIfSalaryIsStored($user_id, $month, $year);
+       
+        // get the trasnportation details if it exists
 
-    
+        if($salary_details[0]->transport_amount != 0)
+        {
+            // get the detailed amount of the transportation for this month
+            $transport_details = $this->homeRepository->getTransportationByMonth($user_id, $month, $year); 
+        }
+        else
+            $transport_details = array();
 
+        $data = array_merge($user_info, $salary_details, $transport_details);
+
+   
+        return view('team.print-salary', array('data' => $data));
+    }
 
 
 }
