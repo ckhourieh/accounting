@@ -502,7 +502,7 @@ class HomeController extends Controller
             $this->homeRepository->addTransaction($invoiceInfo[0]->invoice_id, null, $invoiceInfo[0]->client_id, $new_payment_value, $description, 10, 
                                                   $actual_date, 1);
 
-            if($invoiceInfo[0]->paid != null && $invoiceInfo[0]->paid > 0)
+            if($invoiceInfo[0]->paid != null && $invoiceInfo[0]->paid >= 0)
             {
                 $new_paid_amount = $invoiceInfo[0]->paid + $new_payment_value;
                 // update the paid amount 
