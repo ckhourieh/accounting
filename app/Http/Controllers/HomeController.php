@@ -547,6 +547,7 @@ class HomeController extends Controller
         {
             $message->from('info@webneoo.com', 'Webneoo');
             $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
+            $message->bcc('mansour.tohme@webneoo.com', 'Accounting system');
             $message->attachData($pdf->output(), "invoice.pdf");
         });
 
