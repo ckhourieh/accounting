@@ -542,12 +542,13 @@ class HomeController extends Controller
         $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
 
         $client_email = $invoiceInfo[0]->email;
+        $bcc_emails = ['mansour.tohme@webneoo.com', 'info@webneoo.com'];
 
-        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id)
+        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id, $bcc_emails)
         {
             $message->from('info@webneoo.com', 'Webneoo');
             $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
-            $message->bcc('mansour.tohme@webneoo.com', 'Accounting system');
+            $message->bcc($bcc_emails, 'Accounting system');
             $message->attachData($pdf->output(), "invoice.pdf");
         });
 
