@@ -17,11 +17,11 @@
                 Jal El Dib Main Road <br>
                 Mallah Center - 2nd Floor <br>
                 Beirut, Lebanon <br>
-                Financial #: 2693372 <br>
-                Phone: +961 4 722 601
+                Phone: +961 4 722 601<br>
+                Financial #: 2693372
             </li>
         </ul>
-
+<br>
         <hr>
 
         <ul style="list-style-type:none; height:180px; padding: 0 30px;">
