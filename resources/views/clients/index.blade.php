@@ -53,13 +53,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($c->total_amount_due - $c->total_income)
-                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due - $c->total_income) }}.00</a>
+                                    @if($c->total_amount_due)
+                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due) }}</a>
                                     @endif
                                 </td>
                                 <td>
                                     @if($c->total_income)
-                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ number_format($c->total_income) }}.00</a>
+                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ number_format($c->total_income) }}</a>
                                     @endif
                                 </td>
                                 <td><a href="{{ route('client_timeline_path', $c->source_id) }}">See Graph</a></td>
