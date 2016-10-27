@@ -54,7 +54,7 @@
                                 </td>
                                 <td>
                                     @if($c->total_amount_due)
-                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due) }}</a>
+                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due - $c->total_income) }}</a>
                                     @endif
                                 </td>
                                 <td>
