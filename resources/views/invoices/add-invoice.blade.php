@@ -28,9 +28,17 @@
                                 </select>
                             </div>
 
+                            <div class="form-group">
+                                <label>Is it a black Invoice?</label>
+                                <select class="form-control" name="is_black">                                
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+
 
                              <div class="form-group">
-                                <label>Date</label>
+                                <label>Due Date</label>
                                 <div class="form-group">
                                  <!-- View website http://eonasdan.github.io/bootstrap-datetimepicker/ -->
                                  <div class='input-group date' id='datetimepicker1'>
@@ -78,20 +86,6 @@
                             <br/>
                             <div class="form-group">
                                 <div class="btn btn-default item"><i class="fa fa-plus"></i> &nbsp Add Item</div>
-                            </div>
-
-
-                             <div class="form-group">
-                                 <label>Next Payment</label>
-                                <div class="form-group">
-                                 <!-- View website http://eonasdan.github.io/bootstrap-datetimepicker/ -->
-                                 <div class='input-group date' id='datetimepicker2'>
-                                     {{ Form::text('invoice_next_payment', null, ['class' => 'form-control', 'placeholder' => 'next payment date'])  }}
-                                     <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                     </span>
-                                 </div>
-                               </div>
                             </div>
 
                             <div class="item_number"><input type="hidden" class="form-control" name="item_number" value="1"></div>

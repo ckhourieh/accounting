@@ -29,12 +29,11 @@
                             <th>Logo</th>
                             <th>Name</th>
                             <th>Total Amount Spent</th>
-                            <th>Timeline</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($suppliersList as $c)             
+                        @foreach($suppliersList as $c)          
                             <tr>
                                 <td style="vertical-align:middle;">{{ $c->source_id }}</td>
                                 <td>
@@ -45,15 +44,9 @@
                                     @endif
                                 </td>
                                 <td><a href="{{ route('view_supplier_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
-                                <td>
-                                    @if(isset($c->total_amount_spent))
-                                    <a href="{{ route('total_amount_spent_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format( $c->total_amount_spent, 2, '.', ' ') }}</a>
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('supplier_timeline_path', $c->source_id) }}">See Graph</a></td>
+                                <td>@if($c->name != NULL) $ {{ round($c->total_expenses, 2) }} @endif</td>
                                 <td>
                                     <a href="{{ route('edit_supplier_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a onclick="return confirm('Are you sure that you want to remove this supplier '{{$c->name}}' from the list?');" href="{{ route('hide_supplier_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach

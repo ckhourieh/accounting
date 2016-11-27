@@ -91,9 +91,11 @@
                                 <tr>
                                     <th>Transaction #</th>
                                     <th>Date</th>
+                                    <th>Invoice #</th>
                                     <th>Supplier Name</th>
+                                    <th>Descriptions</th>
                                     <th>Amount</th>
-                                    <th>Contact Person</th>
+                                    <th>Type</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -102,9 +104,16 @@
                                     <tr>
                                         <td><a href="{{ route('view_transaction_details_path', $i->transaction_id) }}">{{ $i->transaction_id }}</a></td>
                                         <td>{{ $i->date }}</td>
+                                        <td>{{ $i->invoice_id }}</td>
                                         <td>{{ $i->supplier_name }}</td>
-                                        <td>$ {{ $i->amount }}.00</td>
-                                        <td>{{ $i->contact_name }}</td>
+                                        <td>{{ $i->description }}</td>
+                                        @if($i->type==0) 
+                                            <td style="color:#d9534f">$ {{ abs($i->amount) }}</td>
+                                            <td style="color:#d9534f"> &nbsp&nbsp OUT </td>
+                                        @elseif($i->type==1)
+                                            <td style="color:#5cb85c">$ {{ $i->amount }}</td>
+                                            <td style="color:#5cb85c">&nbsp&nbsp IN </td>
+                                        @endif
                                         <td>
                                             <a href="{{ route('hide_transaction_path', $i->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
                                         </td>

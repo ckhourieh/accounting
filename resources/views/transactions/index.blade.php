@@ -27,13 +27,11 @@
                         <tr>
                             <th>#</th>
                             <th>Date</th>
-                            <th>Invoice id </th>
                             <th>Invoice #</th>
                             <th>Client / Supplier</th>
                             <th>Description</th>
                             <th>Amount</th>
                             <th>Type</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,9 +42,12 @@
                                 @else
                                  <td>{{ $t->transaction_id }}</td>
                                 @endif
-                                <td>{{ $t->date }} </td>
-                                <td><a href="{{ route('view_invoice_details_path', $t->invoice_id) }}">{{ $t->invoice_id }}</a></td>
-                                <td>{{ $t->invoice_number }}</td>
+                                <td>{{ date("Y-m-d",strtotime($t->date)) }} </td>
+                                @if($t->type==0)
+                                <td>{{ $t->invoice_id }}</td>
+                                @elseif($t->type==1)
+                                <td><a href="{{ route('view_invoice_details_path', $t->invoice_id) }}">{{ $t->invoice_nb }}</a></td>
+                                @endif
                                 <td>
                                     @if( $t->type_id == 1 )
                                     <a href="{{ route('view_client_details_path', $t->source_id) }}">{{ $t->source_name }}</a>
@@ -58,15 +59,12 @@
                                 </td>
                                 <td>{{ $t->description }}</td>
                                 @if($t->type==0) 
-                                    <td style="color:#d9534f">$ {{ number_format($t->amount, 2, '.', ' ') }}</td>
-                                    <td style="color:#d9534f"><i class="fa fa-arrow-up"></i> &nbsp&nbsp OUT </td>
+                                    <td style="color:#d9534f">$ {{ round(abs($t->amount), 2) }}</td>
+                                    <td style="color:#d9534f"> &nbsp&nbsp OUT </td>
                                 @elseif($t->type==1)
-                                    <td style="color:#5cb85c">$ {{ number_format($t->amount, 2, '.', ' ') }}</td>
-                                    <td style="color:#5cb85c"><i class="fa fa-arrow-down"></i> &nbsp&nbsp IN </td>
+                                    <td style="color:#5cb85c">$ {{ round($t->amount, 2) }}</td>
+                                    <td style="color:#5cb85c">&nbsp&nbsp IN </td>
                                 @endif
-                                <td>
-                                    <a onclick="return confirm('Are you sure that you want to remove this transaction '{{$t->transaction_id}}'?');" href="{{ route('hide_transaction_path', $t->transaction_id) }}"><i class="fa fa-trash-o"></i></a>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>

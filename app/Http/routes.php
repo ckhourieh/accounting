@@ -32,328 +32,289 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
    
-
+    /*---------------------------------------------------------
+    CLIENTS SECTION
+    -------------------------------------------------------------*/
     //Clients
     Route::get('/clients', [
         'as' => 'clients_path',
-        'uses' => 'HomeController@clients'
+        'uses' => 'ClientController@index'
     ]);
 
     //Client details
     Route::get('/client-{client_id}', [
         'as' => 'view_client_details_path',
-        'uses' => 'HomeController@clientDetails'
-    ]);
-
-    //Client total amount due
-    Route::get('/clients/total-amount-due-{client_id}', [
-        'as' => 'total_amount_due_path',
-        'uses' => 'HomeController@totalAmountDue'
-    ]);
-
-    //Client total income
-    Route::get('/clients/total-income-{client_id}', [
-        'as' => 'total_income_path',
-        'uses' => 'HomeController@totalIncome'
-    ]);
-
-    //Client Next Payments
-    Route::get('/clients/next-payments-{client_id}', [
-        'as' => 'next_payments_path',
-        'uses' => 'HomeController@nextPayments'
-    ]);
-
-    //Timeline
-    Route::get('/clients/timeline-{client_id}', [
-        'as' => 'client_timeline_path',
-        'uses' => 'HomeController@clientTimeline'
+        'uses' => 'ClientController@show'
     ]);
 
     //Add Client
     Route::get('/clients/add-client', [
         'as' => 'add_client_path',
-        'uses' => 'HomeController@addClient'
+        'uses' => 'ClientController@add'
     ]);
 
     //Add Client
     Route::post('/clients/add-client', [
         'as' => 'add_client_path',
-        'uses' => 'HomeController@storeClient'
+        'uses' => 'ClientController@store'
     ]);
 
     //Edit Client
     Route::get('/clients/edit-client-{client_id}', [
         'as' => 'edit_client_path',
-        'uses' => 'HomeController@editClient'
+        'uses' => 'ClientController@edit'
     ]);
 
     //Edit Client
     Route::post('/clients/edit-client-{client_id}', [
         'as' => 'edit_client_path',
-        'uses' => 'HomeController@updateClient'
+        'uses' => 'ClientController@update'
     ]);
 
     //Hide Client
     Route::get('/clients/hide-client-{client_id}', [
         'as' => 'hide_client_path',
-        'uses' => 'HomeController@hideClient'
-    ]);
-
-    //Hide Client
-    Route::post('/clients/hide-client-{client_id}', [
-        'as' => 'hide_client_path',
-        'uses' => 'HomeController@hideClient'
+        'uses' => 'ClientController@hide'
     ]);
 
 
-
+    /*---------------------------------------------------------
+    SUPPLIER SECTION
+    -------------------------------------------------------------*/
 
     //Suppliers
     Route::get('/suppliers', [
         'as' => 'suppliers_path',
-        'uses' => 'HomeController@suppliers'
+        'uses' => 'SupplierController@index'
     ]);
 
     //Supplier details
     Route::get('/supplier-{supplier_id}', [
         'as' => 'view_supplier_details_path',
-        'uses' => 'HomeController@supplierDetails'
-    ]);
-
-    //Supplier total amount spent
-    Route::get('/suppliers/total-amount-spent-{supplier_id}', [
-        'as' => 'total_amount_spent_path',
-        'uses' => 'HomeController@totalAmountSpent'
-    ]);
-
-    //Timeline
-    Route::get('/suppliers/timeline-{supplier_id}', [
-        'as' => 'supplier_timeline_path',
-        'uses' => 'HomeController@supplierTimeline'
+        'uses' => 'SupplierController@show'
     ]);
 
     //Add supplier
     Route::get('/suppliers/add-supplier', [
         'as' => 'add_supplier_path',
-        'uses' => 'HomeController@addSupplier'
+        'uses' => 'SupplierController@add'
     ]);
 
     //Add supplier
     Route::post('/suppliers/add-supplier', [
         'as' => 'add_supplier_path',
-        'uses' => 'HomeController@storeSupplier'
+        'uses' => 'SupplierController@store'
     ]);
 
     //Edit supplier
     Route::get('/suppliers/edit-supplier-{supplier_id}', [
         'as' => 'edit_supplier_path',
-        'uses' => 'HomeController@editSupplier'
+        'uses' => 'SupplierController@edit'
     ]);
 
     //Edit supplier
     Route::post('/suppliers/edit-supplier-{supplier_id}', [
         'as' => 'edit_supplier_path',
-        'uses' => 'HomeController@updateSupplier'
+        'uses' => 'SupplierController@update'
     ]);
 
     //Hide supplier
     Route::get('/suppliers/hide-supplier-{supplier_id}', [
         'as' => 'hide_supplier_path',
-        'uses' => 'HomeController@hideSupplier'
+        'uses' => 'SupplierController@hide'
     ]);
 
-    //Hide supplier
-    Route::post('/suppliers/hide-supplier-{supplier_id}', [
-        'as' => 'hide_supplier_path',
-        'uses' => 'HomeController@hideSupplier'
-    ]);
+
+
+    /*---------------------------------------------------------
+    INVOICES SECTION
+    -------------------------------------------------------------*/
 
     //Invoices
     Route::get('/invoices', [
         'as' => 'invoices_path',
-        'uses' => 'HomeController@invoices'
+        'uses' => 'InvoiceController@index'
     ]);
 
     //Invoice Details
     Route::get('/invoice-{invoice_id}', [
         'as' => 'view_invoice_details_path',
-        'uses' => 'HomeController@invoiceDetails'
+        'uses' => 'InvoiceController@show'
     ]);
 
     //Add Invoice
     Route::get('/invoices/add-invoice', [
         'as' => 'add_invoice_path',
-        'uses' => 'HomeController@addInvoice'
+        'uses' => 'InvoiceController@add'
     ]);
 
     //Add Invoice
     Route::post('/invoices/add-invoice', [
         'as' => 'add_invoice_path',
-        'uses' => 'HomeController@storeInvoice'
+        'uses' => 'InvoiceController@store'
     ]);
 
     //Edit Invoice
     Route::get('/invoices/edit-invoice-{invoice_id}', [
         'as' => 'edit_invoice_path',
-        'uses' => 'HomeController@editInvoice'
+        'uses' => 'InvoiceController@edit'
     ]);
 
     //Edit Invoice
     Route::post('/invoices/edit-invoice-{invoice_id}', [
         'as' => 'edit_invoice_path',
-        'uses' => 'HomeController@updateInvoice'
+        'uses' => 'InvoiceController@updateDraft'
     ]);
 
     //Edit no draft Invoice
     Route::post('/invoices/edit-no-draft-invoice-{invoice_id}', [
         'as' => 'edit_no_draft_invoice_path',
-        'uses' => 'HomeController@updateNoDraftInvoice'
+        'uses' => 'InvoiceController@updateNoDraft'
     ]);
     
 
     //Print Invoice
     Route::get('/invoices/print-invoice-{invoice_id}', [
         'as' => 'print_invoice_path',
-        'uses' => 'HomeController@printInvoice'
+        'uses' => 'InvoiceController@printt'
     ]);
 
     //Download Invoice
     Route::get('/invoices/download-invoice-{invoice_id}', [
         'as' => 'download_invoice_path',
-        'uses' => 'HomeController@downloadInvoice'
+        'uses' => 'InvoiceController@download'
     ]);
 
     //Send Invoice
     Route::get('/invoices/send-invoice-{invoice_id}', [
         'as' => 'send_invoice_path',
-        'uses' => 'HomeController@sendInvoice'
+        'uses' => 'InvoiceController@send'
     ]);
 
     //Hide Invoice
     Route::get('/invoices/hide-invoice-{invoice_id}', [
         'as' => 'hide_invoice_path',
-        'uses' => 'HomeController@hideInvoice'
+        'uses' => 'InvoiceController@hide'
     ]);
+
+
+    /*---------------------------------------------------------
+    TRANSACTION SECTION
+    -------------------------------------------------------------*/
 
 
     //Transactions
     Route::get('/transactions', [
         'as' => 'transactions_path',
-        'uses' => 'HomeController@transactions'
+        'uses' => 'TransactionController@index'
     ]);
 
     //Transaction Details
     Route::get('/transaction-{transaction_id}', [
         'as' => 'view_transaction_details_path',
-        'uses' => 'HomeController@transactionDetails'
+        'uses' => 'TransactionController@show'
     ]);
 
     //Add Transaction
     Route::get('/transactions/add-transaction', [
         'as' => 'add_transaction_path',
-        'uses' => 'HomeController@addTransaction'
+        'uses' => 'TransactionController@add'
     ]);
 
     //Add Transaction
     Route::post('/transactions/add-transaction', [
         'as' => 'add_transaction_path',
-        'uses' => 'HomeController@storeTransaction'
+        'uses' => 'TransactionController@store'
     ]);
 
     //Hide Transaction
     Route::get('/transactions/hide-transaction-{transaction_id}', [
         'as' => 'hide_transaction_path',
-        'uses' => 'HomeController@hideTransaction'
+        'uses' => 'TransactionController@hide'
     ]);
-
-    //Hide Transaction
-    Route::post('/transactions/hide-transaction-{transaction_id}', [
-        'as' => 'hide_transaction_path',
-        'uses' => 'HomeController@hideTransaction'
-    ]);
-
 
 
 
       Route::group(['middleware' => 'admin'], function () {
 
+            /*---------------------------------------------------------
+            DASHBOARD SECTION
+            -------------------------------------------------------------*/
+
             //Dashboard
             Route::get('/dashboard', [
                 'as' => 'dashboard_path',
-                'uses' => 'HomeController@dashboard'
+                'uses' => 'DashboardController@index'
             ]);
 
+            /*---------------------------------------------------------
+            SALARIES SECTION
+            -------------------------------------------------------------*/
 
-          //view profile for salaries
-            Route::get('/team', [
-                'as' => 'team_path',
-                'uses' => 'HomeController@team'
-            ]);
-
-            //view profile details for salary
-            Route::get('/profile-details-{user_id}', [
-                'as' => 'profile_details_path',
-                'uses' => 'HomeController@profileDetails'
-            ]);
-
-
-
-
-            //view and add transportation
-            Route::get('/transportation-{user_id}', [
-                'as' => 'transportation_path',
-                'uses' => 'HomeController@transportation'
-            ]);
-
-
-            //store a transportation 
-            Route::post('/add-transportation-{user_id}', [
-                'as' => 'add_transportation_path',
-                'uses' => 'HomeController@storeTransportation'
-            ]);
-
-
-            //view and add transportation
+            //generate salaries
             Route::get('/salary-{user_id}', [
                 'as' => 'salary_path',
-                'uses' => 'HomeController@salary'
+                'uses' => 'SalaryController@generate'
             ]);
 
 
             //preview salaries
             Route::post('/preview-salary-{user_id}-{month}-{year}', [
                 'as' => 'preview_salary_path',
-                'uses' => 'HomeController@previewSalary'
+                'uses' => 'SalaryController@preview'
             ]);
 
 
             //store the salaries in the transaction
             Route::post('/add-salary-{user_id}', [
                 'as' => 'add_salary_path',
-                'uses' => 'HomeController@storeSalary'
+                'uses' => 'SalaryController@store'
             ]);
 
 
             //Print salaries
             Route::get('/team/print-salary-{user_id}-{month}-{year}', [
                 'as' => 'print_salary_path',
-                'uses' => 'HomeController@printSalary'
+                'uses' => 'SalaryController@printt'
+            ]);
+
+            /*---------------------------------------------------------
+            TRANSPORTATION SECTION
+            -------------------------------------------------------------*/
+
+
+            //view and add transportation
+            Route::get('/transportation-{user_id}', [
+                'as' => 'transportation_path',
+                'uses' => 'TransportationController@add'
             ]);
 
 
+            //store a transportation 
+            Route::post('/add-transportation-{user_id}', [
+                'as' => 'add_transportation_path',
+                'uses' => 'TransportationController@store'
+            ]);
+
+
+            /*---------------------------------------------------------
+            TEAM SECTION
+            -------------------------------------------------------------*/
+
+            //view profile for salaries
+            Route::get('/team', [
+                'as' => 'team_path',
+                'uses' => 'TeamController@index'
+            ]);
+
+            //view profile details for salary
+            Route::get('/profile-details-{user_id}', [
+                'as' => 'profile_details_path',
+                'uses' => 'TeamController@show'
+            ]);
 
 
     });
-
-
-
-  
-    
-
-
-    
-
-   
 
 
 });

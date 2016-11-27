@@ -25,11 +25,10 @@
                 <table id="clients" class="table table-bordered table-hover" cellspacing="0" width="100%">
                     <thead>
                         <tr>
+                            <th>Code</th>
                             <th>Invoice #</th>
                             <th>Due Date</th>
-                            <th>Creation Date</th>
                             <th>Client Name</th>
-                            <th>Next Payments</th>
                             <th>Amount</th>
                             <th>Status</th>
                             <th>Paid</th>
@@ -40,27 +39,21 @@
                     <tbody>
                         @foreach($invoicesList as $i)             
                             <tr <?php if(($i->due_date < date("Y-m-d")) && ($i->status_id == '4')) echo 'class="danger"';?>>
-                                <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_id }}</a></td>
+                                <td>{{ $i->invoice_id }}</td>
+                                <td><a href="{{ route('view_invoice_details_path', $i->invoice_id) }}">{{ $i->invoice_nb }}</a></td>
                                 <td>{{ $i->due_date }}</td>
-                                <td>{{ $i->created_at }}</td>
-                                <td><a href="{{ route('view_client_details_path', $i->client_id) }}">{{ $i->name }}</a></td>
-                                <td>
-                                    @if($i->next_payment != '0000-00-00')
-                                    {{ $i->next_payment }}
-                                    @endif
-                                </td>
-                               
-                                <td>$ {{ number_format($i->amount, 2, '.', ' ') }}</td>
-                                <td style="color:{{$i->color_code}}"><b>{{ $i->status }}</b></td>
+                                <td><a href="{{ route('view_client_details_path', $i->client_id) }}">{{ $i->client_name }}</a></td>                  
+                                <td>$ {{ $i->amount }}</td>
+                                <td style="color:{{$i->color_code}}"><b>{{ $i->status_name }}</b></td>
                                 <td style="color:#5cb85c">
                                     @if($i->paid)
-                                        {{ number_format($i->paid, 2, '.', ' ') }}
+                                        $ {{ $i->paid }}
                                     @endif
                                 </td>
                                 <td style="color:#d9534f">
                                     @if($i->amount - $i->paid)
                                         <?php $r=($i->amount - $i->paid);  ?>
-                                        {{ number_format($r, 2, '.', ' ') }}
+                                        $ {{ $r }}
                                     @endif
                                 </td>
                                 <td>

@@ -93,22 +93,8 @@
                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label>Type</label><br>
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label id="out" class="btn btn-default **active**">
-                                        <input type="radio" name="transaction_type" id="transaction_type0" value="0">
-                                    OUT 
-                                    </label>
-                                    <label id="in" class="btn btn-default">
-                                        <input type="radio" name="transaction_type" id="transaction_type1" value="1">
-                                    IN 
-                                    </label>
-                                </div>
-                            </div>
 
-
-                            <div id="invoice_id" class="form-group" style="display:none;">
+                            <div id="invoice_id" class="form-group">
                                 <label>Invoice #</label>
                                 <div class="form-group input-group">
                                     <input type="text" class="form-control" name="transaction_invoice" placeholder="Enter the invoice number">

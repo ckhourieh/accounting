@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-            Edit Invoice # {{ $invoiceInfo[0]->invoice_id }}
+            Edit Invoice # {{ $invoiceInfo[0]->invoice_id }} <span style="color:{{$invoiceInfo[0]->color_code}}">[{{ $invoiceInfo[0]->status_name }}]</span>
         </h1>
     </div>
 </div>
@@ -52,12 +52,11 @@
                                 <div class="form-group input-group">
                                     <span class="input-group-addon">$</span>
                                     <input type="text" class="form-control" name="invoice_amount" value="{{ $invoiceInfo[0]->amount }}" disabled>
-                                    <span class="input-group-addon">.00</span>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Date</label>
+                                <label>Due Date</label>
                                 <div class="form-group">
                                  <!-- View website http://eonasdan.github.io/bootstrap-datetimepicker/ -->
                                  <div class='input-group date' id='datetimepicker1'>
@@ -99,24 +98,11 @@
 
                             <input type="hidden" class="form-control" name="item_number" value="{{ $i }}">
 
-
-                             <div class="form-group">
-                                <label>Status</label><br>
-                                <div class="btn-group" data-toggle="buttons">
-                                    @foreach($status as $s)
-                                        <!-- display all status except: "Overdue" and "sent" -->
-                                        @if($s->status_id != 4 && $s->status_id != 1)
-                                            <label id="out" class="btn btn-default <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'active'; ?>">
-                                                <input type="radio" name="invoice_status" id="invoice_status1" value="{{$s->status_id}}" <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'checked="checked"'; ?>>
-                                            {{$s->name}} 
-                                            </label>     
-                                        @endif                             
-                                    @endforeach
-                                </div>
-                            </div>
-
+                            <br>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-lg">Edit Invoice</button>
+                                <button type="submit" class="btn btn-primary btn-md">Edit Invoice</button>
+                                <a onclick="return confirm('Are you sure you want to send the invoice number {{$invoiceInfo[0]->invoice_id}}?')" href="{{ route('send_invoice_path', $invoiceInfo[0]->invoice_id) }}"  class="btn btn-success btn-md">Send Invoice</a>
+                                <a onclick="return confirm('Are you sure you want to remove this invoice number {{$invoiceInfo[0]->invoice_id}} from the list?');" href="{{ route('hide_invoice_path', $invoiceInfo[0]->invoice_id) }}" class="btn btn-danger btn-md">Delete Invoice</a>
                             </div>
                         {!! Form::close() !!}
                     </div>
@@ -141,116 +127,55 @@
                     <div class="col-lg-12">
                        
                        
-                            <h3 style="float:left">{{ $invoiceInfo[0]->client_name }}</h3>
-                            <br>
+                        <h3 style="float:left">{{ $invoiceInfo[0]->client_name }}</h3>
+                        <br>
 
 
-                            <div class="form-group" style="text-align:right">
-                                <label>Due Date: &nbsp&nbsp </label>{{ $invoiceInfo[0]->due_date }}
-                            </div>
-
-
-
-                             <ul style="list-style-type:none; height:35px; background:#000; padding: 0 30px;">
-                                <li style="padding:5px; font-weight:bold; width:50%; float:left; display:inline-block; color:#fff;">
-                                    Item
-                                </li>
-                                
-                                <li style="padding:5px; text-align:right; font-weight:bold; width:50%; float:right; display:inline-block; color:#fff;">
-                                    Price
-                                </li>
-                             </ul>
-                                
-                            <?php $i=1; ?>
-                            @foreach($invoiceItems as $in)
-
-                                <ul style="list-style-type:none; padding: 0 30px;">
-                                    <li style="padding:5px; float:left; width:80%; display:inline-block;">
-                                        <b>{{ $in->service_title }}</b><br>
-                                        {{ $in->description }}
-                                    </li>
-                                    
-                                    <li style="padding:5px; text-align:right; float:right; width:20%; display:inline-block;">
-                                        ${{ $in->item_amount }}.00
-                                    </li>
-                                </ul>
-                            @endforeach
-                            
-                                <ul style="list-style-type:none; padding: 0 30px;">
-                                    <li style="padding:5px; float:left; width:50%; display:inline-block;"></li>
-                                    <li style="padding:5px; text-align:right; border-top:2px solid #eee; font-weight:bold; float:right; width:50%; display:inline-block;">
-                                       Total: ${{ $invoiceInfo[0]->amount }}.00
-                                    </li>
-                                </ul>
-                        
-                        <div style="margin-top:140px">
-
-                         <label>Actual status: &nbsp&nbsp </label><span style="color:{{$invoiceInfo[0]->color_code}}"><b>{{ $invoiceInfo[0]->status_name }}</b></span> 
-                         <br><br>
-                            {!! Form::open(array('route' => array('edit_no_draft_invoice_path', $invoice_id))) !!}        
-                                <input type="hidden" class="form-control" name="item_number" value="{{ $i }}">
-                                <input type="hidden" class="form-control" name="invoice_id" value="{{ $invoice_id }}">
-
-                                 <div class="form-group">
-                                    <label>Change status to:</label><br>
-
-                                   <!-- if status is "sent" or "overdue" -->
-                                   @if($invoiceInfo[0]->status_id == 1 || $invoiceInfo[0]->status_id == 4)
-                                        <div class="btn-group" data-toggle="buttons">
-                                            @foreach($status as $s)
-                                                <!-- display only the following status: "paid", "incomplete", "not paid" -->
-                                                @if($s->status_id == 3 || $s->status_id == 2 || $s->status_id == 5)
-                                                    <label id="out" class="btn btn-default <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'active'; ?>">
-                                                        <input type="radio" name="invoice_status" id="invoice_status1" value="{{$s->status_id}}" <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'checked="checked"'; ?>>
-                                                    {{$s->name}} 
-                                                    </label> 
-                                                @endif                                 
-                                            @endforeach
-                                        </div>
-                                     <!-- if status is "incomplete" or "not paid" -->
-                                    @elseif($invoiceInfo[0]->status_id == 2 || $invoiceInfo[0]->status_id == 5)
-                                        <div class="btn-group" data-toggle="buttons">
-                                            @foreach($status as $s)
-                                                <!-- display only the following status: "paid", "incomplete" -->
-                                                @if($s->status_id == 2 || $s->status_id == 2 || $s->status_id == 3)
-                                                    <label id="out" class="btn btn-default <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'active'; ?>">
-                                                        <input type="radio" name="invoice_status" id="invoice_status1" value="{{$s->status_id}}" <?php if($invoiceInfo[0]->status_id == $s->status_id) echo 'checked="checked"'; ?>>
-                                                    {{$s->name}} 
-                                                    </label> 
-                                                @endif                                 
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-
-                                 <div class="form-group">
-                                    <label> Enter new payment:</label><br>
-                                    <div class="onoffswitch">
-                                        <input type="checkbox" name="new_payment" class="onoffswitch-checkbox" id="myonoffswitch" value="1">
-                                        <label class="onoffswitch-label" for="myonoffswitch">
-                                            <span class="onoffswitch-inner"></span>
-                                            <span class="onoffswitch-switch"></span>
-                                        </label>
-                                    </div>
-                                 </div>
-                               
-
-                                <div id="new_payment_input" class="form-group" style="display:none;">
-                                    <label>Paid amount in USD</label>
-                                    <input type="text" class="form-control" name="invoice_paid" value="{{ $invoiceInfo[0]->paid }}">
-                                </div>
-
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-lg">Edit Invoice</button>
-                                </div>
-                            {!! Form::close() !!}
+                        <div class="form-group" style="text-align:right">
+                            <label>Due Date: &nbsp&nbsp </label>{{ $invoiceInfo[0]->due_date }}
                         </div>
+
+
+
+                         <ul style="list-style-type:none; height:35px; background:#000; padding: 0 30px;">
+                            <li style="padding:5px; font-weight:bold; width:50%; float:left; display:inline-block; color:#fff;">
+                                Item
+                            </li>
+                            
+                            <li style="padding:5px; text-align:right; font-weight:bold; width:50%; float:right; display:inline-block; color:#fff;">
+                                Price
+                            </li>
+                         </ul>
+                            
+                        <?php $i=1; ?>
+                        @foreach($invoiceItems as $in)
+
+                            <ul style="list-style-type:none; padding: 0 30px;">
+                                <li style="padding:5px; float:left; width:80%; display:inline-block;">
+                                    <b>{{ $in->service_title }}</b><br>
+                                    {{ $in->description }}
+                                </li>
+                                
+                                <li style="padding:5px; text-align:right; float:right; width:20%; display:inline-block;">
+                                    ${{ $in->item_amount }}.00
+                                </li>
+                            </ul>
+                        @endforeach
+                        
+                            <ul style="list-style-type:none; padding: 0 30px;">
+                                <li style="padding:5px; float:left; width:50%; display:inline-block;"></li>
+                                <li style="padding:5px; text-align:right; border-top:2px solid #eee; font-weight:bold; float:right; width:50%; display:inline-block;">
+                                   Total: ${{ $invoiceInfo[0]->amount }}.00
+                                </li>
+                            </ul>
+                        <br><br>
+                        
                      
                     </div>
-                </div>
-                <!-- /.row (nested) -->
+                </div><br><br>
 
-                <br/>
+
+
                 <div class="row">
                     <!-- Advanced Tables -->
                     <div class="panel panel-default">
@@ -292,6 +217,39 @@
                                 </table>
                             </div>
                             
+                        </div>
+                    </div>
+                    <!--End Advanced Tables -->
+                </div>
+
+                  <div class="row">
+                    <!-- Advanced Tables -->
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3 style="float:left">New Payments</h3><br><br><br>
+
+                            {!! Form::open(array('route' => array('edit_no_draft_invoice_path', $invoice_id))) !!}        
+                                <input type="hidden" class="form-control" name="invoice_id" value="{{ $invoice_id }}">
+                                <label>Payment Value</label><br>
+                                <input type="text" class="form-control" name="payment_value" value=""><br>
+                                <div class="form-group">
+                                    <button name="add_payment_submit" type="submit" class="btn btn-primary btn-md">Add payment</button>
+                                </div>
+                            {!! Form::close() !!}
+
+                            {!! Form::open(array('route' => array('edit_no_draft_invoice_path', $invoice_id))) !!}     
+                                <input type="hidden" class="form-control" name="invoice_id" value="{{ $invoice_id }}">
+                                <div class="form-group">
+                                    <button name="close_invoice_submit" type="submit" class="btn btn-success btn-md">Close Invoice</button> 
+                                </div>
+                            {!! Form::close() !!}   
+
+                            {!! Form::open(array('route' => array('edit_no_draft_invoice_path', $invoice_id))) !!}     
+                                <input type="hidden" class="form-control" name="invoice_id" value="{{ $invoice_id }}">
+                                <div class="form-group">
+                                    <button name="cancel_invoice_submit" type="submit" class="btn btn-danger btn-md">Cancel Invoice</button> 
+                                </div>
+                            {!! Form::close() !!}   
                         </div>
                     </div>
                     <!--End Advanced Tables -->

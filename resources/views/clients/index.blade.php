@@ -28,15 +28,14 @@
                             <th>ID</th>
                             <th>Logo</th>
                             <th>Name</th>
-                            <th>Next Payments</th>
                             <th>Total Amount Due</th>
                             <th>Total Income</th>
-                            <th>Timeline</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($clientsList as $c)             
+                        
+                        @foreach($clientsList as $c)            
                             <tr>
                                 <td>{{ $c->source_id }}</td>
                                 <td>
@@ -47,25 +46,10 @@
                                     @endif
                                 </td>
                                 <td><a href="{{ route('view_client_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
-                                <td>
-                                    @if(isset($c->total_income))
-                                    {{ $c->next_payments }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($c->total_amount_due - $c->total_income > 0)
-                                    <a href="{{ route('total_amount_due_path', $c->source_id) }}" style="color:#d9534f">$ {{ number_format($c->total_amount_due - $c->total_income) }}</a>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($c->total_income)
-                                    <a href="{{ route('total_income_path', $c->source_id) }}" style="color:#5cb85c">$ {{ number_format($c->total_income) }}</a>
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('client_timeline_path', $c->source_id) }}">See Graph</a></td>
+                                <td>@if($c->total_due_amount != NULL) $ {{ $c->total_due_amount }} @endif</td>
+                                <td>@if($c->sum_transactions != NULL) $ {{ $c->sum_transactions }} @endif</td>
                                 <td>
                                     <a href="{{ route('edit_client_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a onclick="return confirm('Are you sure that you want to remove this client '{{$c->name}}' from the list?');" href="{{ route('hide_client_path', $c->source_id) }}"><i class="fa fa-trash-o"></i></a>
                                 </td>
                             </tr>
                         @endforeach
