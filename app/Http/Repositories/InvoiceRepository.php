@@ -132,7 +132,6 @@ class InvoiceRepository {
               'invoice_nb' => $invoiceNb,
               'client_id' => $input['invoice_client'],
               'amount' => $amount,
-              'remaining' => $amount,
               'due_date' => $input['invoice_date'],
               'status_id' => '6',
               'is_black' => $input['is_black'],
