@@ -44,7 +44,7 @@
                                     @endif
                                 </td>
                                 <td><a href="{{ route('view_supplier_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
-                                <td>@if($c->name != NULL) $ {{ round($c->total_expenses, 2) }} @endif</td>
+                                <td>@if($c->name != NULL) $ {{ round(abs($c->total_expenses), 2) }} @endif</td>
                                 <td>
                                     <a href="{{ route('edit_supplier_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>
