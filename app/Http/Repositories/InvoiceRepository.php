@@ -131,8 +131,7 @@ class InvoiceRepository {
           \DB::table('ta_invoices')->insert([
               'invoice_nb' => $invoiceNb,
               'client_id' => $input['invoice_client'],
-              'amount' => $amount, 
-              'paid' => '0',
+              'amount' => $amount,
               'remaining' => $amount,
               'due_date' => $input['invoice_date'],
               'status_id' => '6',

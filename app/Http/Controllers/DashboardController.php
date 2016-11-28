@@ -34,7 +34,7 @@ class DashboardController extends Controller
         //Get monthly average expenses by categories of expenses
         $avgMonthExpByCateg = $this->dashboardRepository->getAvgMonthlyExpensesByCategory();
         //Get the average expenses of webneoo by Category and by Month
-        $avgMonthExp = $this->dashboardRepository->getAvgMonthlyExpensesByCategory();
+        $avgMonthExp = $this->dashboardRepository->getAvgMonthlyExpenses();
         //Get Total due payments
         $totDuePayments = $this->dashboardRepository->getTotalDuePayments();
         //Get Due Payments by clients
