@@ -54,7 +54,7 @@ class ClientRepository {
     --------------------------------------------------*/
     public function getAll()
     {
-        $q = \DB::select("SELECT A.*, B.sum_transactions, (A.sum_invoices - B.sum_transactions) as total_due_amount
+        $q = \DB::select("SELECT A.*, IFNULL(B.sum_transactions, 0) as sum_transactions, (A.sum_invoices - IFNULL(B.sum_transactions, 0)) as total_due_amount
                           FROM (SELECT A.*, SUM(B.amount) as sum_invoices
                                FROM ta_sources as A
                                LEFT JOIN ta_invoices as B ON A.source_id = B.client_id AND B.status_id != 5 AND B.status_id != 6 AND B.hidden=0
