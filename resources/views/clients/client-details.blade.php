@@ -71,6 +71,16 @@
                                 <td><b>{{ $clientInfo[0]->accounting_id }}</b></td>
                               </tr>
 
+                              <tr>
+                                <td>Follow up Date:</td>
+                                <td><b>{{ $clientInfo[0]->follow_up_date }}</b></td>
+                              </tr>
+
+                              <tr>
+                                <td>Notes:</td>
+                                <td><b>{{ $clientInfo[0]->notes }}</b></td>
+                              </tr>
+
                             </tbody>
                           </table>
                           

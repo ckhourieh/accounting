@@ -64,6 +64,14 @@
                                 <input type="text" class="form-control" name="source_accounting" value="{{ $clientInfo[0]->accounting_id }}">
                             </div>
                             <div class="form-group">
+                                <label>Follow up Date</label>
+                                <input type="text" class="form-control" name="follow_up_date" value="{{ $clientInfo[0]->follow_up_date }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <textarea class="form-control" name="notes">{{ $clientInfo[0]->notes }}</textarea>
+                            </div>
+                            <div class="form-group">
                                 <button type="submit" class="btn btn-primary btn-lg">Edit Client</button>
                             </div>
                         {!! Form::close() !!}

@@ -30,6 +30,7 @@
                             <th>Name</th>
                             <th>Total Amount Due</th>
                             <th>Total Income</th>
+                            <th>Follow Up</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -48,6 +49,7 @@
                                 <td><a href="{{ route('view_client_details_path', $c->source_id) }}">{{ $c->name }}</a></td>
                                 <td>@if($c->total_due_amount != NULL) $ {{ $c->total_due_amount }} @endif</td>
                                 <td>@if($c->sum_transactions != NULL) $ {{ $c->sum_transactions }} @endif</td>
+                                <td>{{ $c->follow_up_date }}</td>
                                 <td>
                                     <a href="{{ route('edit_client_path', $c->source_id) }}"><i class="fa fa-pencil-square-o"></i></a>
                                 </td>

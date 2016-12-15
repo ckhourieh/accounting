@@ -33,6 +33,8 @@ class ClientRepository {
             'owner' => $input['source_owner'],
             'contact_name' => $input['source_contact'],
             'accounting_id' => $input['source_accounting'],
+            'follow_up_date' => $input['follow_up_date'],
+            'notes' => $input['notes'],
             'updated_at' => Carbon::now('Asia/Beirut')]);
     }
 

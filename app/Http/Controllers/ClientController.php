@@ -119,7 +119,7 @@ class ClientController extends Controller
         else if($clientInfo[0]->img != NULL)
             $request->filename = $clientInfo[0]->img;
 
-        $this->clientRepository->update($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting'), $request->filename);
+        $this->clientRepository->update($request->only('source_id', 'source_name', 'source_desc', 'source_email', 'source_phone', 'source_address', 'source_owner', 'source_contact', 'source_accounting', 'follow_up_date', 'notes'), $request->filename);
         $request->session()->flash('flash_message','Client Successfully updated!');
 
         //gets all clients and their information 
