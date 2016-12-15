@@ -85,7 +85,7 @@ class ClientRepository {
         $q = \DB::select("SELECT A.*, IFNULL(B.paid,0) as paid, (A.amount - IFNULL(B.paid,0)) as remaining
                           FROM
                             (SELECT A.invoice_id, A.invoice_nb, A.client_id, A.amount, A.due_date, DATE(A.created_at) as created_at, C.name as status, 
-                            B.name, B.email
+                            C.color_code, B.name, B.email
                             FROM ta_invoices as A 
                             JOIN ta_sources as B ON A.client_id = B.source_id AND B.hidden = 0
                             JOIN ta_status as C ON A.status_id = C.status_id

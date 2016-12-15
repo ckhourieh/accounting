@@ -113,9 +113,17 @@
                                         <td>{{ $i->due_date }}</td>
                                         <td>{{ $i->name }}</td>
                                         <td>$ {{ $i->amount }}</td>
-                                        <td>{{ $i->status }}</td>
-                                        <td>$ {{ $i->paid }}</td>
-                                        <td>$ {{ $i->amount - $i->paid }}</td>
+                                        <td style="color:{{$i->color_code}}"><b>{{ $i->status }}</b></td>
+                                        <td style="color:#5cb85c">
+                                            @if($i->paid)
+                                                $ {{ $i->paid }}
+                                            @endif
+                                        </td>
+                                        <td style="color:#d9534f">
+                                            @if($i->amount - $i->paid)
+                                                $ {{ $i->amount - $i->paid }}
+                                            @endif
+                                        </td>
                                         <td>
                                             <a href="{{ route('print_invoice_path', $i->invoice_id) }}" class="btnPrint"><i class="fa fa-print"></i></a>
                                             <a href="javascript:DownloadInvoice();"><i class="fa fa-download"></i></a>
