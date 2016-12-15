@@ -271,20 +271,27 @@ class InvoiceController extends Controller
         
         //gets all invoices and their information 
         $invoiceInfo = $this->invoiceRepository->getInvoiceById($invoice_id);
-        $invoiceItems = $this->invoiceRepository->getInvoiceItems($invoice_id);
-        $data = array_merge($invoiceInfo, $invoiceItems);
-        $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
-
-        $client_email = $invoiceInfo[0]->email;
-        $bcc_emails = ['info@webneoo.com'];
-
-        Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id, $bcc_emails)
+            //If the invoice is not a black invoice, we must send the email to the client
+        if($invoiceInfo[0]->invoice_nb != 0)
         {
-            $message->from('info@webneoo.com', 'Webneoo');
-            $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
-            $message->bcc($bcc_emails, 'Accounting system');
-            $message->attachData($pdf->output(), "invoice.pdf");
-        });
+            $invoiceItems = $this->invoiceRepository->getInvoiceItems($invoice_id);
+            $data = array_merge($invoiceInfo, $invoiceItems);
+
+            $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
+
+            $client_email = $invoiceInfo[0]->email;
+            $bcc_emails = ['info@webneoo.com'];
+
+            Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id, $bcc_emails)
+            {
+                $message->from('info@webneoo.com', 'Webneoo');
+                $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
+                $message->bcc($bcc_emails, 'Accounting system');
+                $message->attachData($pdf->output(), "invoice.pdf");
+            });
+
+        }
+        
 
         //Update the status o the invoice to SENT
         $this->invoiceRepository->updateInvoiceStatus($invoice_id, 1);
