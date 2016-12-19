@@ -271,7 +271,7 @@ class InvoiceController extends Controller
         
         //gets all invoices and their information 
         $invoiceInfo = $this->invoiceRepository->getInvoiceById($invoice_id);
-            //If the invoice is not a black invoice, we must send the email to the client
+        //If the invoice is not a black invoice, we must send the email to the client
         if($invoiceInfo[0]->invoice_nb != 0)
         {
             $invoiceItems = $this->invoiceRepository->getInvoiceItems($invoice_id);
@@ -280,14 +280,16 @@ class InvoiceController extends Controller
             $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
 
             $client_email = $invoiceInfo[0]->email;
+            $invoice_nb = $invoiceInfo[0]->invoice_nb;
+            
             $bcc_emails = ['info@webneoo.com'];
 
-            Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_id, $bcc_emails)
+            Mail::send('invoices.email-invoice', array('data' => $data), function($message) use($pdf, $client_email, $invoice_nb, $bcc_emails)
             {
                 $message->from('info@webneoo.com', 'Webneoo');
-                $message->to($client_email)->subject('Invoice # '.$invoice_id. ' from webneoo');
+                $message->to($client_email)->subject('Invoice # '.$invoice_nb. ' from webneoo');
                 $message->bcc($bcc_emails, 'Accounting system');
-                $message->attachData($pdf->output(), "invoice.pdf");
+                $message->attachData($pdf->output(), 'invoice #'.$invoice_nb.'.pdf');
             });
 
         }
@@ -311,9 +313,10 @@ class InvoiceController extends Controller
         //gets all invoices and their information 
         $invoiceInfo = $this->invoiceRepository->getInvoiceById($invoice_id);
         $invoiceItems = $this->invoiceRepository->getInvoiceItems($invoice_id);
+        $invoice_nb = $invoiceInfo[0]->invoice_nb;
         $data = array_merge($invoiceInfo, $invoiceItems);
         $pdf = PDF::loadView('invoices.print-invoice', array('data' => $data))->setPaper('a4');
-        $file_name = 'invoice '.$invoice_id.'.pdf';
+        $file_name = 'invoice '.$invoice_nb.'.pdf';
         return $pdf->download($file_name);
     }
 
