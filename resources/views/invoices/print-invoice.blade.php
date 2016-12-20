@@ -35,7 +35,7 @@
                 @endif
             </li>
             <li style="float:right; width:50%; text-align:right; display:inline-block; line-height:28px">
-                <b>Invoice Number: </b>{{ $data[0]->invoice_id }}<br>
+                <b>Invoice Number: </b>{{ $data[0]->invoice_nb }}<br>
                 <b>Invoice Date: </b>{{ $data[0]->created_at }}<br>
                 <b>Payment Due: </b></b>{{ $data[0]->due_date }}<br>
                 <b>Amount Due (USD): ${{ number_format($data[0]->amount, 2, '.', ' ') }}</b>
