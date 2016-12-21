@@ -33,7 +33,7 @@
                 </li>
                 
                 <li style="padding-top:10px; text-align:right; float:right; display:inline-block; font-size:14px; border-bottom: 1px solid #888888;">
-                    $666
+                    ${{ number_format($data[1]->base_salary_amount, 2, '.', ' ') }}
                 </li>
             </ul>
        
@@ -73,7 +73,7 @@
             <ul style="list-style-type:none; padding: 0 30px;">
                     <li style="padding:5px; float:left; width:50%; display:inline-block;"></li>
                     <li style="padding:5px; text-align:right; font-weight:bold; float:right; width:50%; display:inline-block;">
-                      <h1> Total: $666 </h1>
+                      <h1> Total: ${{ number_format($data[1]->total_amount, 2, '.', ' ') }} </h1>
                     </li>
                 </ul>
         </div>
