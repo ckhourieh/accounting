@@ -47,7 +47,7 @@
 
                       <tr>
                         <td>Invoice number:</td>
-                        <td><b>{{$transactionInfo[0]->invoice_number}}</b></td>
+                        <td><b>{{$transactionInfo[0]->invoice_nb}}</b></td>
                       </tr>
 
                       <tr>
