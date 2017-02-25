@@ -11,14 +11,40 @@
 </div>
 
 
+<?php 
+    echo 'Total Income: '.$data['total_income'][0]->total_income.'<br>';
+    echo 'Total Expenses: '.$data['total_expenses'][0]->total_expenses.'<br>';
+    echo 'Total Profit: '.$data['total_profit'][0]->total_profit.'<br>';
+    echo 'Total Due Payments: '.$data['total_due_payments'][0]->total_due_payment.'<br>';
+ ?>
+
 <!-- /. ROW  -->
 
 <div class="row">
 
     <div class="col-xs-12">
         <div class="panel panel-default">
+            <div class="panel-heading">Total Income</div>
             <div class="panel-heading">
-                Statistics of the year {{ $actual_year }}
+                <label>Select your year</label>
+                <input type="text" name="daterange" value="01/01/2015 - 01/31/2015" />
+
+                
+            </div>
+
+
+            <div class="panel-body">
+                <div id="morris-bar-chart"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Statistics of the year {{ date_format($actual_year,'Y') }}
             </div>
             <div class="panel-body">
                 <div id="bar-chart-all"></div>
@@ -33,8 +59,53 @@
                     <div class="btn btn-default" id="all">All</div>
                 </div>
             </div>
+
+            <div class="row" style="margin-bottom:5px;">
+                <div class="col-md-10 sous">
+                    <h2>KPIs</h2>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-blue"><i class="fa fa-calendar-o"></i></span>
+                        <div class="sm-st-info">
+                            <span>{{ $data['total_income'][0]->total_income }}</span>
+                            Total income
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-blue"><i class="fa fa-calendar"></i></span>
+                        <div class="sm-st-info">
+                            <span>{{ $data['total_expenses'][0]->total_expenses }}</span>
+                            Total expenses 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-blue"><i class="fa fa-calendar-plus-o"></i></span>
+                        <div class="sm-st-info">
+                            <span>{{ $data['total_profit'][0]->total_profit }}</span>
+                            Total profit
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="sm-st clearfix">
+                        <span class="sm-st-icon st-blue"><i class="fa fa-calendar-check-o"></i></span>
+                        <div class="sm-st-info">
+                            <span>{{ $data['total_due_payments'][0]->total_due_payment }}</span>
+                            Total due payments
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+
+
 
 </div>
 
@@ -42,195 +113,124 @@
 <script src="/js/morris/raphael.min.js"></script>
 <script src="/js/morris/morris.min.js"></script>
 
+
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+ 
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
 <script type="text/javascript">
 
-var tab_month=<?=json_encode($tab_month)?>;
+// convert the php data to json 
+var incomes=<?=json_encode($data['income'])?>;
+var expenses=<?=json_encode($data['expenses'])?>;
+var profit=<?=json_encode($data['profit'])?>;
+
+// month dictionary
+var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC' ];
+var data= [];
+
+var current_year = new Date().getFullYear(); //returns the current year
+var month_num = ((current_year - 2015)+1)*12; // the number of months since 2015 till the actual year 
+var year = 2015; // initialize the year to 2015
+var m = 0; //initialize the month to zero 
 
 
-// ------------------ TOTAL INCOME ---------------
-
-var tab_income=<?=json_encode($tab_income)?>;
-
-// construct the data table of the income
-var income_data="[";
-for(var a = 1; a<=12; a++)
+// create an base array with values = zeros 
+for(var i=0; i<month_num; i++)
 {
-    income_data+= "{y:'"+tab_month[a]+"',a:"+tab_income[a]+"},";
-}
-
-//remove the last coma from s
-income_data=income_data.slice(0,-1); 
-
-income_data+="]";
-
-
-// ------------------ TOTAL EXPENSES ---------------
-
-var tab_expenses =<?=json_encode($tab_expenses)?>;
-
-// construct the data table of the expenses
-var expenses_data="[";
-for(var b = 1; b<=12; b++)
-{
-    expenses_data+= "{y:'"+tab_month[b]+"',a:"+tab_expenses[b]+"},";
-}
-
-//remove the last coma from s
-expenses_data=expenses_data.slice(0,-1); 
-
-expenses_data+="]";
-
-
-
-// ------------------ TOTAL PROFIT ---------------
-
-// construct the data table of the profit
-var profit_data="[";
-for(var c = 1; c<=12; c++)
-{
-    profit_data+= "{y:'"+tab_month[c]+"',a:"+(tab_income[c]-tab_expenses[c])+"},";
-}
-
-//remove the last coma from s
-profit_data=profit_data.slice(0,-1); 
-
-profit_data+="]";
-
-
-
-// ------------------ TOTAL FOR ALL  ---------------
-
-// construct the data table of the profit
-var all_data="[";
-for(var d = 1; d<=12; d++)
-{
-    all_data+= "{y:'"+tab_month[d]+"',a:"+tab_income[d]+",b:"+tab_expenses[d]+",c:"+(tab_income[d]-tab_expenses[d])+"},";
-}
-
-//remove the last coma from s
-all_data=all_data.slice(0,-1); 
-
-all_data+="]";
-
-
-
-
-(function ($) {
-
-    $('#bar-chart-profit').empty();
-    $('#bar-chart-expenses').empty();
-    $('#bar-chart-income').empty();
-
-    $('#income').click(function(){
-
-        $('#bar-chart-income').empty();
-        $('#bar-chart-all').empty();
-        $('#bar-chart-profit').empty();
-        $('#bar-chart-expenses').empty();
-        $('#bar-chart-income').show();
+  if(m==12) // if we have looped the 12 months, reset m to zero and increment a year
+   {
+    year++;
+    m=0;
+   } 
     
-    Morris.Bar({
-        element: 'bar-chart-income',
-        data: eval(income_data),
-        xkey: 'y',
-        ykeys: ['a'],
-        labels: ['Income'],
-        barColors: ['#5cb85c'],
-        hideHover: 'auto',
-        resize: true
-    });
+   data.push({  
+                index:year+'_'+parseInt(m+1), 
+                year: year, 
+                month:months[m],
+                axis_label: months[m]+' '+year, 
+                income: 0, 
+                expenses: 0, 
+                profit: 0
+            })  
+   m++;
+}
+
+// loop the incomes array and replace the zero incomes by their values 
+$.each( incomes, function( key, value ) {
+
+   // find the index of this value in the data array 
+   index = data.findIndex(item => item.index === value.this_year+'_'+value.this_month) 
+   // set the income value of relative month
+   data[index].income = value.total_income;
+   
+});     
+
+// loop the expenses array and replace the zero expenses by their values 
+$.each( expenses, function( key, value ) {
+
+   // find the index of this value in the data array 
+   index = data.findIndex(item => item.index === value.this_year+'_'+value.this_month) 
+   // set the expenses value of relative month
+   data[index].expenses = value.total_expenses;
+   
+});
+
+// loop the profits array and replace the zero profits by their values 
+$.each( profit, function( key, value ) {
+
+   // find the index of this value in the data array 
+   index = data.findIndex(item => item.index === value.this_year+'_'+value.this_month) 
+   // set the profit value of relative month
+   data[index].profit = value.total_profit;
+   
+});
 
 
-    });
+
+$(function() {
+    $('input[name="daterange"]').daterangepicker();
+});
 
 
-    $('#expenses').click(function(){
-
-        $('#bar-chart-expenses').empty();
-        $('#bar-chart-all').empty();
-        $('#bar-chart-profit').empty();
-        $('#bar-chart-income').empty();
-        $('#bar-chart-expenses').show();
-
-        Morris.Bar({
-            element: 'bar-chart-expenses',
-            data: eval(expenses_data),
-            xkey: 'y',
-            ykeys: ['a'],
-            labels: ['Expenses'],
-            barColors: ['#d9534f'],
-            hideHover: 'auto',
-            resize: true
-        });
-    });
+    
 
 
-     $('#profit').click(function(){
+$(document).on('change', "#income_year", function() { 
 
-        $('#bar-chart-profit').empty();
-        $('#bar-chart-all').empty();
-        $('#bar-chart-profit').show();
-        $('#bar-chart-expenses').empty();
-        $('#bar-chart-income').empty();
-
-        Morris.Bar({
-            element: 'bar-chart-profit',
-            data: eval(profit_data),
-            xkey: 'y',
-            ykeys: ['a'],
-            labels: ['Profit'],
-            barColors: ['#007cc2'],
-            hideHover: 'auto',
-            resize: true
-        });
-
-    });
+    var year = $('#income_year').val();
+    for(var m=0; m<12; m++)
+    {
+        data.push({ y: months[m], a: 100, b: 90})
+    }
 
 
-    $('#all').click(function(){
-        
-        $('#bar-chart-all').empty();
-        $('#bar-chart-profit').empty();
-        $('#bar-chart-expenses').empty();
-        $('#bar-chart-income').empty();
-        $('#bar-chart-all').show();
+    console.log(data);
+});  
 
 
-        /* MORRIS BAR CHART
+
+
+
+/* Income chart bar
         -----------------------------------------*/
         Morris.Bar({
-            element: 'bar-chart-all',
-            data: eval(all_data),
-            xkey: 'y',
-            ykeys: ['a', 'b', 'c'],
+            element: 'morris-bar-chart',
+            data: data,
+            xkey: ['axis_label'],
+            ykeys: ['income', 'expenses', 'profit'],
             labels: ['Income', 'Expenses', 'Profit'],
-            barColors: ['#5cb85c','#d9534f', '#007cc2', '#A8E9DC'],
+             barColors: [
+        '#5cb85c','#d9534f', '#007cc2', 
+        '#A8E9DC' 
+        ],
             hideHover: 'auto',
             resize: true
         });
 
-
-    });
-
-
-
-    /* MORRIS BAR CHART
-    -----------------------------------------*/
-    Morris.Bar({
-        element: 'bar-chart-all',
-        data: eval(all_data),
-        xkey: 'y',
-        ykeys: ['a', 'b', 'c'],
-        labels: ['Income', 'Expenses', 'Profit'],
-        barColors: ['#5cb85c','#d9534f', '#007cc2', '#A8E9DC'],
-        hideHover: 'auto',
-        resize: true
-    });
-
-
-
-
-}(jQuery));
 
 </script>
 @endsection

@@ -26,31 +26,30 @@ class DashboardController extends Controller
     public function index()
     {          
         //Get the monthly income per month since webneoo's creation
-        $income = $this->dashboardRepository->getMonthlyIncomes();
+        $data['income'] = $this->dashboardRepository->getMonthlyIncomes();
         //Get the monthly expenses per month since webneoo's creation
-        $expenses = $this->dashboardRepository->getMonthlyExpenses();
+        $data['expenses'] = $this->dashboardRepository->getMonthlyExpenses();
         //Get the monthly profit per month since webneoo's creation
-        $profit = $this->dashboardRepository->getMonthlyProfit();   
+        $data['profit'] = $this->dashboardRepository->getMonthlyProfit();   
         //Get monthly average expenses by categories of expenses
-        $avgMonthExpByCateg = $this->dashboardRepository->getAvgMonthlyExpensesByCategory();
+        $data['avg_month_exp_by_categ'] = $this->dashboardRepository->getAvgMonthlyExpensesByCategory();
         //Get the average expenses of webneoo by Category and by Month
-        $avgMonthExp = $this->dashboardRepository->getAvgMonthlyExpenses();
+        $data['avg_month_exp'] = $this->dashboardRepository->getAvgMonthlyExpenses();
         //Get Total due payments
-        $totDuePayments = $this->dashboardRepository->getTotalDuePayments();
+        $data['total_due_payments'] = $this->dashboardRepository->getTotalDuePayments();
         //Get Due Payments by clients
-        $duePaymentsByClients = $this->dashboardRepository->getDuePaymentsByClients();     
+        $data['due_payments_by_clients'] = $this->dashboardRepository->getDuePaymentsByClients();     
         //Get total profit
-        $getTotalProfit = $this->dashboardRepository->getTotalProfit();
+        $data['total_profit'] = $this->dashboardRepository->getTotalProfit();
         //Get total income
-        $getTotalIncome = $this->dashboardRepository->getTotalIncome();
+        $data['total_income'] = $this->dashboardRepository->getTotalIncome();
         //Get total expenses
-        $getTotalExpenses = $this->dashboardRepository->getTotalExpenses();
+        $data['total_expenses'] = $this->dashboardRepository->getTotalExpenses();
 
+//dd($data);
+        
 
-        echo 'Total Income: '.$getTotalIncome[0]->total_income.'<br>';
-        echo 'Total Expenses: '.$getTotalExpenses[0]->total_expenses.'<br>';
-        echo 'Total Profit: '.$getTotalProfit[0]->total_profit.'<br>';
-        echo 'Total Due Payments: '.$totDuePayments[0]->total_due_payment.'<br>';
+        return view('dashboard', array('actual_year' => Carbon::Now('Asia/Beirut'), 'data' => $data));
 
     }
 
