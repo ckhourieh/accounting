@@ -63,6 +63,7 @@ class TransportationRepository {
                             FROM ta_transport 
                             WHERE user_id = :user_id
                             AND MONTH(transport_date) = MONTH('".$selected_date."')
+                            AND YEAR(transport_date) = YEAR('".$selected_date."')
                             GROUP BY user_id",
                 array(':user_id' => $user_id));
         return $q;
