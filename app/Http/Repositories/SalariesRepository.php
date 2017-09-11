@@ -8,9 +8,9 @@ use Carbon\Carbon;
 class SalariesRepository {
 
 
-         /*----------------------------------
-        store salary in the database + transaction
-    ------------------------------------*/
+    /*----------------------------------------
+    store salary in the database + transaction
+    -----------------------------------------*/
 
     public function add($base_salary_amount, $transport_amount, $days_off_amount, 
                               $bonus_amount, $total_amount, $description, $salary_date, $user_id)
