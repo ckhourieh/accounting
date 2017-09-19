@@ -14,10 +14,10 @@
             <li style="float:right; width:50%; text-align:right; display:inline-block;">
                 <h1>INVOICE</h1>
                 <b>Webneoo</b> <br>
-                Jal El Dib Main Road <br>
-                Mallah Center - 2nd Floor <br>
-                Beirut, Lebanon <br>
-                Phone: +961 4 722 601<br>
+                Berytech Digital Park <br>
+                Beirut Digital District 1294 <br>
+                Bechara El Khoury Road, Beirut, Lebanon.  <br>
+                Phone: +961 4 66 90 40 - ext.149<br>
                 Financial #: 2693372
             </li>
         </ul>
