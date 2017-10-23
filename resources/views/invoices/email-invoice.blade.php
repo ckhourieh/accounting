@@ -64,7 +64,7 @@ One of the following:<br/>
 
 <b>FOR CASH/CHEQUE PAYMENTS:</b><br/>
 ---------------------------------------<br/>
-Please reserve an appointment for paying your subscription, by calling us between 09:30 AM and 6:30 PM at +961 4 722 601, Monday through Friday.<br/>
+Please reserve an appointment for paying your subscription, by calling us between 09:30 AM and 6:30 PM at +961 1 669 040 / 50 ext: 197 - 149, Monday through Friday.<br/>
 Cheques should be made payable to <b>webneoo</b>.<br/>
 If you choose to pay by cash, please make sure to have the exact amount needed, as this will help us avoid any issues with returning change.<br/>
 Once paid you will be given a receipt on payment.<br/><br/>
@@ -76,12 +76,11 @@ Thank you,<br/><br/>
 
 <b>webneoo Team</b> <br/><br/>
 
-<div style="font-size:11pt;">
-Office. (+961) 4 722 601 <br/>
+<p style="font-size:11px">
+	<b>Phone</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+961 1 669 040 / 50 Ext: 197 - 149<br>
+	<b>Address</b> &nbsp;&nbsp;Berytech Digital Park, Beirut Digital District 1294, <br><span style="padding-left:3.9em"> Bechara El Khoury Road, Beirut, Lebanon. </span><br><span style="padding-left:3.9em">PO Box 1107 2240.</span><br>
+</p>
 
-<a href="mailto:info@webneoo.com">info@webneoo.com</a><br/>
-Beirut - Jal el dib - Mallah Center - 2nd floor 
-</div>
 <img src="http://webneoodemo.com/images/signature/webneoo_logo.png"/><br/>
 <a href="http://webneoo.com"> webneoo.com</a> | 
 
