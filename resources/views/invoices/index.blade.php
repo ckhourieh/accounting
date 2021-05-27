@@ -91,7 +91,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#clients').DataTable({
-            "order": [[ 0, "desc" ]]
+            "order": [[ 0, "desc" ]],
+            "buttons": [ {extend: 'excel', title: 'ExampleFile'} ]
         });
         $(".btnPrint").printPage();
     });
